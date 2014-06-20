@@ -18,7 +18,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 @Controller
-@RequestMapping("/user/")
+@RequestMapping("/user")
 public class UserController extends BaseController {
 
     private static Logger logger = Logger.getLogger(UserController.class);
@@ -29,7 +29,7 @@ public class UserController extends BaseController {
         this.userManager = userManager;
     }
 
-    @RequestMapping("addUser")
+    @RequestMapping("/addUser")
     @ResponseBody
     public Map<String, Object> addUser(User user) {
         userManager.save(user);
