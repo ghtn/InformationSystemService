@@ -23,10 +23,6 @@ public class User implements Serializable {
     private String email;
     private String password;
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     @Id
     @GeneratedValue
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
