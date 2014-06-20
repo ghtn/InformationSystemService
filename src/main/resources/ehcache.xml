@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+
+    <diskStore path="${diskStorePath}"/>
+
+    <defaultCache maxElementsInMemory="${maxElementsInMemory}" overflowToDisk="${overflowToDisk}" eternal="${eternal}"
+                  memoryStoreEvictionPolicy="${memoryStoreEvictionPolicy}" maxElementsOnDisk="${maxElementsOnDisk}"
+                  diskExpiryThreadIntervalSeconds="${diskExpiryThreadIntervalSeconds}"
+                  timeToIdleSeconds="${timeToIdleSeconds}" timeToLiveSeconds="${timeToLiveSeconds}" diskPersistent="${diskPersistent}"/>
+
+</ehcache>
