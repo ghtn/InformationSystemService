@@ -14,6 +14,7 @@ public class SubjectAnswer {
     private Integer correct;
 
     @Id
+    @GeneratedValue
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
     public int getId() {
         return id;

@@ -1,10 +1,7 @@
 package com.ghtn.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.sql.Timestamp;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by lihe on 14-6-20.
@@ -17,9 +14,10 @@ public class Subject {
     private Integer mark;
     private Integer type;
     private String creator;
-    private Timestamp creatTime;
+    private Date creatTime;
 
     @Id
+    @GeneratedValue
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
     public int getId() {
         return id;
@@ -80,12 +78,13 @@ public class Subject {
     }
 
     @Basic
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creatTime", nullable = true, insertable = true, updatable = true)
-    public Timestamp getCreatTime() {
+    public Date getCreatTime() {
         return creatTime;
     }
 
-    public void setCreatTime(Timestamp creatTime) {
+    public void setCreatTime(Date creatTime) {
         this.creatTime = creatTime;
     }
 

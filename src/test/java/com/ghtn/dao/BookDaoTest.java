@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-public class BookDaoTest extends BaseTestCase{
+public class BookDaoTest extends BaseTestCase {
 
     private BookDao bookDao;
 

@@ -1,9 +1,6 @@
 package com.ghtn.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by lihe on 14-6-20.
@@ -15,6 +12,7 @@ public class Department {
     private Integer type;
 
     @Id
+    @GeneratedValue
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
     public int getId() {
         return id;

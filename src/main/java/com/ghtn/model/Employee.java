@@ -2,6 +2,7 @@ package com.ghtn.model;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.sql.Date;
 
@@ -13,6 +14,7 @@ public class Employee {
     private int id;
 
     @Id
+    @GeneratedValue
     @javax.persistence.Column(name = "id", nullable = false, insertable = true, updatable = true)
     public int getId() {
         return id;
