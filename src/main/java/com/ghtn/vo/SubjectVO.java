@@ -12,6 +12,7 @@ public class SubjectVO {
     private Integer mark;
     private Integer type;
     private String typeDesc;
+    private Integer correct;
     private String creator;
     private String creatTime;
 
@@ -85,5 +86,13 @@ public class SubjectVO {
 
     public void setTypeDesc(String typeDesc) {
         this.typeDesc = typeDesc;
+    }
+
+    public Integer getCorrect() {
+        return correct;
+    }
+
+    public void setCorrect(Integer correct) {
+        this.correct = correct;
     }
 }

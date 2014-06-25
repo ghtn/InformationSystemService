@@ -101,8 +101,15 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
         subject.setCreator("李鹤");
 
         subject.setCreatTime(new Date());
+
+        // 如果是选择题, 把"是否正确"置为null, 此字段只用于判断题
+        if (subject.getType() == 0) {
+            subject.setCorrect(null);
+        }
         subject = subjectDao.save(subject);
-        if (!StringUtil.isNullStr(paramStr)) {
+
+        // 如果是选择题, 并且答案信息不为空
+        if (subject.getType() == 0 && !StringUtil.isNullStr(paramStr)) {
             String[] answers = paramStr.split("@");
             for (int i = 0; i < answers.length; i++) {
                 String answer = answers[i];

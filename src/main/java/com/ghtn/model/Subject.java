@@ -13,6 +13,7 @@ public class Subject {
     private String description;
     private Integer mark;
     private Integer type;
+    private Integer correct;
     private String creator;
     private Date creatTime;
 
@@ -65,6 +66,16 @@ public class Subject {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    @Basic
+    @Column(name = "correct", nullable = true, insertable = true, updatable = true)
+    public Integer getCorrect() {
+        return correct;
+    }
+
+    public void setCorrect(Integer correct) {
+        this.correct = correct;
     }
 
     @Basic
