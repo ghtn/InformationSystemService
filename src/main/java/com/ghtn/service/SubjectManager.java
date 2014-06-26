@@ -20,4 +20,6 @@ public interface SubjectManager extends GenericManager<Subject, Integer> {
 
     void updateSubject(Subject subject, String paramStr) throws Exception;
 
+    void importSubjects(int deptId, String fileName) throws Exception;
+
 }

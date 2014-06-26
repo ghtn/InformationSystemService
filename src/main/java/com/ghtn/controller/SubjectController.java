@@ -2,11 +2,13 @@ package com.ghtn.controller;
 
 import com.ghtn.model.Subject;
 import com.ghtn.service.SubjectManager;
+import com.ghtn.util.FileUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,5 +55,11 @@ public class SubjectController extends BaseController {
     public Map<String, Object> updateSubject(Subject subject, String paramStr) throws Exception {
         subjectManager.updateSubject(subject, paramStr);
         return operationSuccess();
+    }
+
+    @RequestMapping("/downloadTemplate")
+    @ResponseBody
+    public String downloadTemplate(String fileName, HttpServletResponse response) throws Exception {
+        return FileUtil.downloadFile(fileName, response);
     }
 }

@@ -7,8 +7,11 @@ import com.ghtn.model.Subject;
 import com.ghtn.model.SubjectAnswer;
 import com.ghtn.service.SubjectManager;
 import com.ghtn.util.DateUtil;
+import com.ghtn.util.FileUtil;
 import com.ghtn.util.StringUtil;
 import com.ghtn.vo.SubjectVO;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,8 @@ import java.util.List;
  */
 @Service("subjectManager")
 public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> implements SubjectManager {
+
+    private static Log log = LogFactory.getLog(SubjectManagerImpl.class);
 
     private SubjectDao subjectDao;
 
@@ -182,6 +187,85 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
         // 是判断题的情况下, 删除subject_answer表中对应的选择题答案
         if (subject.getType() == 1) {
             subjectAnswerDao.removeSubjectAnswer(subject);
+        }
+    }
+
+    @Override
+    public void importSubjects(int deptId, String fileName) throws Exception {
+        List<String[]> list = FileUtil.ExcelReaderForList(fileName, 2);
+        if (list != null && list.size() > 0) {
+            for (String[] strArray : list) {
+                String type = strArray[0].trim();
+                if (!type.equals("选择题") && !type.equals("判断题")) {
+                    log.error("题目类型错误: 必须为\"选择题\"或\"判断题\", 将跳过此次循环, 继续导入下一个题目!");
+                    continue;
+                }
+
+                int mark;
+                try {
+                    Double d = Double.parseDouble(strArray[1].trim());
+                    mark = d.intValue();
+                } catch (NumberFormatException e) {
+                    log.error("分值类型错误, 必须为正整数, 将跳过此次循环, 继续导入下一个题目! 分值为: " + strArray[1]);
+                    continue;
+                }
+
+                String desc = strArray[2].trim();
+                if (StringUtil.isNullStr(desc)) {
+                    log.error("题目描述为空, 将跳过此次循环, 继续导入下一个题目!");
+                    continue;
+                }
+
+                Subject subject = new Subject();
+                subject.setDeptId(deptId);
+                subject.setDescription(desc);
+                subject.setMark(mark);
+                subject.setCreator("李鹤");
+                subject.setCreatTime(new Date());
+
+                if (type.equals("选择题")) {
+                    subject.setType(0);
+                    subject.setCorrect(null);
+                    subject = subjectDao.save(subject);
+
+                    for (int i = 3; i < strArray.length; i++) {
+                        String answer = strArray[i];
+                        if (!StringUtil.isNullStr(answer)) {
+                            SubjectAnswer subjectAnswer = new SubjectAnswer();
+                            subjectAnswer.setSubjectId(subject.getId());
+
+                            if (answer.contains("$")) {
+                                // 如果是正确答案
+                                String[] s = answer.split("\\$");
+                                subjectAnswer.setDescription(s[0]);
+
+                                if (s[1].trim().equals("正确")) {
+                                    subjectAnswer.setCorrect(1);
+                                } else {
+                                    subjectAnswer.setCorrect(0);
+                                }
+                            } else {
+                                subjectAnswer.setDescription(answer);
+                                subjectAnswer.setCorrect(0);
+                            }
+
+                            subjectAnswerDao.save(subjectAnswer);
+                        }
+                    }
+                }
+
+                if (type.equals("判断题")) {
+                    subject.setType(1);
+                    if (strArray[3].trim().equals("正确")) {
+                        subject.setCorrect(1);
+                    } else {
+                        subject.setCorrect(0);
+                    }
+                    subjectDao.save(subject);
+                }
+            }
+        } else {
+            log.error("从excel文件读取的list为空!!");
         }
     }
 }

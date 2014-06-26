@@ -75,6 +75,7 @@
             <tx:method name="count*" propagation="REQUIRED" read-only="true"/>
             <tx:method name="find*" propagation="REQUIRED" read-only="true"/>
             <tx:method name="list*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="import*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="*" read-only="true"/>
         </tx:attributes>
     </tx:advice>

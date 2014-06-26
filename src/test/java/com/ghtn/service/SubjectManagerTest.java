@@ -48,4 +48,9 @@ public class SubjectManagerTest extends BaseTestCase {
         subject.setId(111);
         subjectManager.removeSubject(subject);
     }
+
+    @Test
+    public void testImport() throws Exception {
+        subjectManager.importSubjects(2, "/Users/lihe/Documents/题库模板.xlsx");
+    }
 }

@@ -6,7 +6,7 @@
     <artifactId>InformationSystemService</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>InformationSystemService Maven Webapp</name>
+    <name>InformationSystemService</name>
     <url>http://maven.apache.org</url>
 
     <prerequisites>
@@ -394,6 +394,8 @@
         <timeToIdleSeconds>3600</timeToIdleSeconds>
         <timeToLiveSeconds>100000</timeToLiveSeconds>
         <diskPersistent>false</diskPersistent>
+
+        <upload.temp.path>../webapps/${project.name}/temp</upload.temp.path>
 
         <encoding>utf-8</encoding>
     </properties>
