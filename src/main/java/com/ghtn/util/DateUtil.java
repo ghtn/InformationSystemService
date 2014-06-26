@@ -8,8 +8,11 @@ import java.util.Date;
 public class DateUtil {
 
     public static String dateToString(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return sdf.format(date);
+        if (date != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return sdf.format(date);
+        }
+        return "";
     }
 
     public static String dateToString(Date date, String format) {

@@ -41,4 +41,17 @@ public class SubjectController extends BaseController {
         return operationSuccess();
     }
 
+    @RequestMapping("/remove")
+    @ResponseBody
+    public Map<String, Object> removeSubject(Subject subject) throws Exception {
+        subjectManager.removeSubject(subject);
+        return operationSuccess();
+    }
+
+    @RequestMapping("/update")
+    @ResponseBody
+    public Map<String, Object> updateSubject(Subject subject, String paramStr) throws Exception {
+        subjectManager.updateSubject(subject, paramStr);
+        return operationSuccess();
+    }
 }

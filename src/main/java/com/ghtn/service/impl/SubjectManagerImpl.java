@@ -76,6 +76,7 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
                 vo.setCreator(subject.getCreator());
                 vo.setMark(subject.getMark());
                 vo.setCreatTime(DateUtil.dateToString(subject.getCreatTime()));
+                vo.setCorrect(subject.getCorrect());
 
                 returnList.add(vo);
             }
@@ -130,5 +131,57 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
             }
         }
 
+    }
+
+    @Override
+    public void removeSubject(Subject subject) {
+        subjectAnswerDao.removeSubjectAnswer(subject);
+        subjectDao.remove(subject);
+    }
+
+    @Override
+    public void updateSubject(Subject subject, String paramStr) throws Exception {
+        // TODO : 修改创建者为当前登录者
+        subject.setCreator("李鹤");
+
+        subject.setCreatTime(new Date());
+
+        // 如果是选择题, 把"是否正确"置为null, 此字段只用于判断题
+        if (subject.getType() == 0) {
+            subject.setCorrect(null);
+        }
+        subjectDao.save(subject);
+
+        if (subject.getType() == 0 && !StringUtil.isNullStr(paramStr)) {
+            String[] answers = paramStr.split("@");
+            for (int i = 0; i < answers.length; i++) {
+                String answer = answers[i];
+                String[] items = answer.split("#");
+
+                SubjectAnswer subjectAnswer = new SubjectAnswer();
+
+                int editId = Integer.parseInt(items[0]);
+                if (editId != 0) {
+                    subjectAnswer.setId(editId);
+                }
+
+                subjectAnswer.setSubjectId(subject.getId());
+                subjectAnswer.setDescription(items[1]);
+                if (items[2].equals("true")) {
+                    subjectAnswer.setCorrect(1);
+                } else if (items[2].equals("false")) {
+                    subjectAnswer.setCorrect(0);
+                } else {
+                    throw new Exception("答案类型错误!答案类型只能是\"正确答案\"或\"非正确答案\"!");
+                }
+
+                subjectAnswerDao.save(subjectAnswer);
+            }
+        }
+
+        // 是判断题的情况下, 删除subject_answer表中对应的选择题答案
+        if (subject.getType() == 1) {
+            subjectAnswerDao.removeSubjectAnswer(subject);
+        }
     }
 }

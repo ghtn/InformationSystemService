@@ -16,4 +16,8 @@ public interface SubjectManager extends GenericManager<Subject, Integer> {
 
     void addSubject(Subject subject, String paramStr) throws Exception;
 
+    void removeSubject(Subject subject);
+
+    void updateSubject(Subject subject, String paramStr) throws Exception;
+
 }

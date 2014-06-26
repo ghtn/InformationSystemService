@@ -41,4 +41,11 @@ public class SubjectManagerTest extends BaseTestCase {
     public void testGetCount() {
         System.out.println(subjectManager.getCount(-1));
     }
+
+    @Test
+    public void testRemove() {
+        Subject subject = new Subject();
+        subject.setId(111);
+        subjectManager.removeSubject(subject);
+    }
 }
