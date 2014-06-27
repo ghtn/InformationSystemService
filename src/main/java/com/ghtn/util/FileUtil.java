@@ -17,11 +17,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -594,6 +596,45 @@ public class FileUtil {
         } catch (IOException e) {
             e.printStackTrace();
             return "输入输出错误！";
+        }
+    }
+
+    /**
+     * spring mvc 上传文件
+     *
+     * @param file 需要上传的文件
+     * @return 在服务器硬盘上保存的文件名
+     */
+    public static String uploadFile(CommonsMultipartFile file) throws Exception {
+        if (!file.isEmpty()) {
+            // 文件扩展名
+            String fileExtension = FileUtil.getFileExtension(file.getOriginalFilename());
+            // 上传到服务器上保存的文件名
+            String newFileName = Calendar.getInstance().getTimeInMillis() + "." + fileExtension;
+
+            // 如果上传的目录不存在, 则创建上传目录
+            if (!new File(ConstantUtil.UPLOAD_TEMP_PATH).exists()) {
+                new File(ConstantUtil.UPLOAD_TEMP_PATH).mkdirs();
+            }
+
+            // 文件在服务器硬盘上的全路径
+            String path = ConstantUtil.UPLOAD_TEMP_PATH + "/" + newFileName;
+
+            File localFile = new File(path);
+            try {
+                // 上传文件
+                file.transferTo(localFile);
+                log.debug("保存在硬盘上的文件全路径为 : " + localFile.getCanonicalPath());
+                return newFileName;
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                return "状态错误!";
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "读写错误!";
+            }
+        } else {
+            throw new Exception("上传的文件为空!");
         }
     }
 }

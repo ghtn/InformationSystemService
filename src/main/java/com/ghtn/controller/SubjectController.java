@@ -2,13 +2,17 @@ package com.ghtn.controller;
 
 import com.ghtn.model.Subject;
 import com.ghtn.service.SubjectManager;
+import com.ghtn.util.ConstantUtil;
 import com.ghtn.util.FileUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,5 +65,22 @@ public class SubjectController extends BaseController {
     @ResponseBody
     public String downloadTemplate(String fileName, HttpServletResponse response) throws Exception {
         return FileUtil.downloadFile(fileName, response);
+    }
+
+    @RequestMapping("/uploadFile")
+    @ResponseBody
+    public Map<String, Object> uploadFile(@RequestParam("file") CommonsMultipartFile file, HttpSession session)
+            throws Exception {
+        String fileName = FileUtil.uploadFile(file);
+        session.setAttribute("fileName", fileName);
+        return operationSuccess();
+    }
+
+
+    @RequestMapping("/importSubjects")
+    @ResponseBody
+    public Map<String, Object> importSubjects(int deptId, HttpSession session) throws Exception {
+        subjectManager.importSubjects(deptId, ConstantUtil.UPLOAD_TEMP_PATH + "/" + session.getAttribute("fileName"));
+        return operationSuccess();
     }
 }
