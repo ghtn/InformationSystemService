@@ -54,7 +54,6 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
     @Override
     public List<SubjectVO> listSubjectByPage(int start, int limit, int type) throws Exception {
         List<Subject> list;
-        List<SubjectVO> returnList = new ArrayList<>();
 
         if (type == -1) {
             // 返回所有类型的题目
@@ -64,31 +63,7 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
             list = subjectDao.listSubjectByPage(start, limit, type);
         }
 
-        if (list != null && list.size() > 0) {
-            for (Subject subject : list) {
-                SubjectVO vo = new SubjectVO();
-                vo.setId(subject.getId());
-                vo.setDeptId(subject.getDeptId());
-                vo.setDeptName(departmentDao.getDeptName(subject.getDeptId()));
-                vo.setDescription(subject.getDescription());
-                vo.setType(subject.getType());
-                if (subject.getType() == 0) {
-                    vo.setTypeDesc("选择题");
-                } else if (subject.getType() == 1) {
-                    vo.setTypeDesc("判断题");
-                } else {
-                    throw new Exception("题目类型错误!!!");
-                }
-                vo.setCreator(subject.getCreator());
-                vo.setMark(subject.getMark());
-                vo.setCreatTime(DateUtil.dateToString(subject.getCreatTime()));
-                vo.setCorrect(subject.getCorrect());
-
-                returnList.add(vo);
-            }
-        }
-
-        return returnList;
+        return transformToVO(list);
     }
 
     @Override
@@ -107,7 +82,7 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
         // TODO : 修改创建者为当前登录者
         subject.setCreator("李鹤");
 
-        subject.setCreatTime(new Date());
+        subject.setCreateTime(new Date());
 
         // 如果是选择题, 把"是否正确"置为null, 此字段只用于判断题
         if (subject.getType() == 0) {
@@ -150,7 +125,7 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
         // TODO : 修改创建者为当前登录者
         subject.setCreator("李鹤");
 
-        subject.setCreatTime(new Date());
+        subject.setCreateTime(new Date());
 
         // 如果是选择题, 把"是否正确"置为null, 此字段只用于判断题
         if (subject.getType() == 0) {
@@ -222,7 +197,7 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
                 subject.setDescription(desc);
                 subject.setMark(mark);
                 subject.setCreator("李鹤");
-                subject.setCreatTime(new Date());
+                subject.setCreateTime(new Date());
 
                 if (type.equals("选择题")) {
                     subject.setType(0);
@@ -271,5 +246,47 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
 
         // 删除临时文件
         FileUtil.deleteFile(new File(fileName));
+    }
+
+    @Override
+    public List<SubjectVO> listSubjectByDate(String startDate, String endDate) throws Exception {
+        if (!StringUtil.isNullStr(startDate)) {
+            startDate += " 00:00:00";
+        }
+        if (!StringUtil.isNullStr(endDate)) {
+            endDate += " 23:59:59";
+        }
+        List<Subject> list = subjectDao.listSubjectByDate(DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate));
+        return transformToVO(list);
+    }
+
+    private List<SubjectVO> transformToVO(List<Subject> list) throws Exception {
+        List<SubjectVO> returnList = new ArrayList<>();
+
+        if (list != null && list.size() > 0) {
+            for (Subject subject : list) {
+                SubjectVO vo = new SubjectVO();
+                vo.setId(subject.getId());
+                vo.setDeptId(subject.getDeptId());
+                vo.setDeptName(departmentDao.getDeptName(subject.getDeptId()));
+                vo.setDescription(subject.getDescription());
+                vo.setType(subject.getType());
+                if (subject.getType() == 0) {
+                    vo.setTypeDesc("选择题");
+                } else if (subject.getType() == 1) {
+                    vo.setTypeDesc("判断题");
+                } else {
+                    throw new Exception("题目类型错误!!!");
+                }
+                vo.setCreator(subject.getCreator());
+                vo.setMark(subject.getMark());
+                vo.setCreateTime(DateUtil.dateToString(subject.getCreateTime()));
+                vo.setCorrect(subject.getCorrect());
+
+                returnList.add(vo);
+            }
+        }
+
+        return returnList;
     }
 }

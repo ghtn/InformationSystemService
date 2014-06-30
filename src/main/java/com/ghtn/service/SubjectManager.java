@@ -22,4 +22,6 @@ public interface SubjectManager extends GenericManager<Subject, Integer> {
 
     void importSubjects(int deptId, String fileName) throws Exception;
 
+    List<SubjectVO> listSubjectByDate(String startDate, String endDate) throws Exception;
+
 }

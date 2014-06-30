@@ -15,7 +15,7 @@ public class Subject {
     private Integer type;
     private Integer correct;
     private String creator;
-    private Date creatTime;
+    private Date createTime;
 
     @Id
     @GeneratedValue
@@ -91,12 +91,12 @@ public class Subject {
     @Basic
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creatTime", nullable = true, insertable = true, updatable = true)
-    public Date getCreatTime() {
-        return creatTime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatTime(Date creatTime) {
-        this.creatTime = creatTime;
+    public void setCreateTime(Date creatTime) {
+        this.createTime = creatTime;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class Subject {
 
         if (deptId != subject.deptId) return false;
         if (id != subject.id) return false;
-        if (creatTime != null ? !creatTime.equals(subject.creatTime) : subject.creatTime != null) return false;
+        if (createTime != null ? !createTime.equals(subject.createTime) : subject.createTime != null) return false;
         if (creator != null ? !creator.equals(subject.creator) : subject.creator != null) return false;
         if (description != null ? !description.equals(subject.description) : subject.description != null) return false;
         if (mark != null ? !mark.equals(subject.mark) : subject.mark != null) return false;
@@ -125,7 +125,7 @@ public class Subject {
         result = 31 * result + (mark != null ? mark.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (creator != null ? creator.hashCode() : 0);
-        result = 31 * result + (creatTime != null ? creatTime.hashCode() : 0);
+        result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
         return result;
     }
 }

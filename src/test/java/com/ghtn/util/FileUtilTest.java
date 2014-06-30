@@ -1,6 +1,5 @@
-package com.ghtn;
+package com.ghtn.util;
 
-import com.ghtn.util.FileUtil;
 import org.junit.Test;
 
 import java.util.List;

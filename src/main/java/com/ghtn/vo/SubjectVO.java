@@ -14,7 +14,7 @@ public class SubjectVO {
     private String typeDesc;
     private Integer correct;
     private String creator;
-    private String creatTime;
+    private String createTime;
 
     public int getId() {
         return id;
@@ -64,12 +64,12 @@ public class SubjectVO {
         this.creator = creator;
     }
 
-    public String getCreatTime() {
-        return creatTime;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatTime(String creatTime) {
-        this.creatTime = creatTime;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
     public String getDeptName() {

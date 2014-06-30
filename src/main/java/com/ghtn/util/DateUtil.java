@@ -25,8 +25,11 @@ public class DateUtil {
     }
 
     public static Date stringToDate(String dateStr, String format) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
-        return sdf.parse(dateStr);
+        if (!StringUtil.isNullStr(dateStr)) {
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            return sdf.parse(dateStr);
+        }
+        return null;
     }
 
     public static java.util.Date createUtilDate(String dateStr, String format) {

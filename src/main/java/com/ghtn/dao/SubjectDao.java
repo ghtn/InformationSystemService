@@ -2,6 +2,7 @@ package com.ghtn.dao;
 
 import com.ghtn.model.Subject;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,4 +18,7 @@ public interface SubjectDao extends GenericDao<Subject, Integer> {
 
     Long getCount(int type);
 
+    List<Subject> listSubjectByDate(Date startDate, Date endDate);
+
+    List<Subject> listSubjectByDate(Date startDate, Date endDate, int type);
 }

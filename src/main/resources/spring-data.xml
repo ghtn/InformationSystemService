@@ -39,7 +39,8 @@
                 <prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
                 <prop key="net.sf.ehcache.configurationResourceName">${net.sf.ehcache.configurationResourceName}</prop>
                 <prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop>
-                <prop key="hibernate.search.default.directory_provider">${hibernate.search.default.directory_provider}</prop>
+                <prop key="hibernate.search.default.directory_provider">${hibernate.search.default.directory_provider}
+                </prop>
                 <prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop>
                 <prop key="hibernate.search.indexing_strategy">${hibernate.search.indexing_strategy}</prop>
             </props>
@@ -76,6 +77,7 @@
             <tx:method name="find*" propagation="REQUIRED" read-only="true"/>
             <tx:method name="list*" propagation="REQUIRED" read-only="true"/>
             <tx:method name="import*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="gen*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="*" read-only="true"/>
         </tx:attributes>
     </tx:advice>

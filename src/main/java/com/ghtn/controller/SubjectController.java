@@ -4,6 +4,7 @@ import com.ghtn.model.Subject;
 import com.ghtn.service.SubjectManager;
 import com.ghtn.util.ConstantUtil;
 import com.ghtn.util.FileUtil;
+import com.ghtn.vo.SubjectVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -82,5 +84,11 @@ public class SubjectController extends BaseController {
     public Map<String, Object> importSubjects(int deptId, HttpSession session) throws Exception {
         subjectManager.importSubjects(deptId, ConstantUtil.UPLOAD_TEMP_PATH + "/" + session.getAttribute("fileName"));
         return operationSuccess();
+    }
+
+    @RequestMapping("/listSubjectByDate")
+    @ResponseBody
+    public List<SubjectVO> listSubjectByDate(String startDate, String endDate) throws Exception {
+        return subjectManager.listSubjectByDate(startDate, endDate);
     }
 }

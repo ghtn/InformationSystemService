@@ -1,7 +1,7 @@
 package com.ghtn.model;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by lihe on 14-6-20.
@@ -15,7 +15,7 @@ public class Paper {
     private Integer deptId;
     private Integer examTime;
     private String creator;
-    private Timestamp createTime;
+    private Date createTime;
     private Integer subNum;
 
     @Id
@@ -90,12 +90,13 @@ public class Paper {
     }
 
     @Basic
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createTime", nullable = true, insertable = true, updatable = true)
-    public Timestamp getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Timestamp createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 

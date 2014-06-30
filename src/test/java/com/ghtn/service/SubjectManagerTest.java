@@ -2,10 +2,12 @@ package com.ghtn.service;
 
 import com.ghtn.BaseTestCase;
 import com.ghtn.model.Subject;
+import com.ghtn.vo.SubjectVO;
 import org.junit.Test;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by lihe on 14-6-23.
@@ -25,7 +27,7 @@ public class SubjectManagerTest extends BaseTestCase {
             Subject subject = new Subject();
             subject.setDescription("题目" + i);
             subject.setCreator("李鹤");
-            subject.setCreatTime(new Date());
+            subject.setCreateTime(new Date());
 
             if (i % 2 == 0) {
                 subject.setType(0);
@@ -53,4 +55,11 @@ public class SubjectManagerTest extends BaseTestCase {
     public void testImport() throws Exception {
         subjectManager.importSubjects(2, "/Users/lihe/Documents/题库模板.xlsx");
     }
+
+    @Test
+    public void testListSubject() throws Exception {
+        List<SubjectVO> list = subjectManager.listSubjectByDate("2014-06-28", "2014-06-30");
+        System.out.println(list.size());
+    }
+
 }
