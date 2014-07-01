@@ -216,9 +216,9 @@ public class FileUtil {
         String extension = getFileExtension(fileName);
         if (!StringUtil.isNullStr(extension)) {
             if (extension.trim().equals("xlsx")) {
-                return ExcelReaderForList(fileName, "2007", 1);
+                return ExcelReaderForList(fileName, "2007", startLine);
             } else if (extension.trim().equals("xls")) {
-                return ExcelReaderForList(fileName, "2003", 1);
+                return ExcelReaderForList(fileName, "2003", startLine);
             } else {
                 throw new Exception("文件类型不对, 必须为excel类型！");
             }
@@ -580,7 +580,7 @@ public class FileUtil {
                 "attachment;fileName=" + new String(fileName.getBytes("gb2312"), "iso8859-1"));
 
         // TODO : 发布到正式服务器需要修改文件路径
-        File file = new File(ConstantUtil.UPLOAD_TEMP_PATH + "/" + fileName);
+        File file = new File(ConstantUtil.WEB_RESOURCES_PATH + "/" + fileName);
 
         try (InputStream is = new FileInputStream(file);
              OutputStream os = response.getOutputStream()) {

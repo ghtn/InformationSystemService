@@ -396,6 +396,7 @@
         <diskPersistent>false</diskPersistent>
 
         <upload.temp.path>../webapps/${project.name}/temp</upload.temp.path>
+        <web.resources.path>../webapps/${project.name}/resources</web.resources.path>
 
         <encoding>utf-8</encoding>
     </properties>

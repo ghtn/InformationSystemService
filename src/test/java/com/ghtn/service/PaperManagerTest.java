@@ -30,4 +30,9 @@ public class PaperManagerTest extends BaseTestCase {
 
         paperManager.genPaper(paper, "2014-06-01", "2014-07-01", 1000, 1000);
     }
+
+    @Test
+    public void testImport() throws Exception {
+        paperManager.importPaper(2, "/Users/lihe/Documents/试卷模板.xls");
+    }
 }

@@ -13,4 +13,5 @@ public interface PaperManager extends GenericManager<Paper, Integer> {
 
     void genPaper(Paper paper, String startDate, String endDate, int choiceSubNum, int judgeSubNum) throws ParseException;
 
+    void importPaper(int deptId, String fileName) throws Exception;
 }

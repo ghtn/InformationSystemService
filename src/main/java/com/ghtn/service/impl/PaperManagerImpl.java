@@ -2,12 +2,15 @@ package com.ghtn.service.impl;
 
 import com.ghtn.dao.PaperDao;
 import com.ghtn.dao.PaperSubjectDao;
+import com.ghtn.dao.SubjectAnswerDao;
 import com.ghtn.dao.SubjectDao;
 import com.ghtn.model.Paper;
 import com.ghtn.model.PaperSubject;
 import com.ghtn.model.Subject;
+import com.ghtn.model.SubjectAnswer;
 import com.ghtn.service.PaperManager;
 import com.ghtn.util.DateUtil;
+import com.ghtn.util.FileUtil;
 import com.ghtn.util.StringUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,6 +54,13 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
     @Resource
     public void setSubjectDao(SubjectDao subjectDao) {
         this.subjectDao = subjectDao;
+    }
+
+    private SubjectAnswerDao subjectAnswerDao;
+
+    @Resource
+    public void setSubjectAnswerDao(SubjectAnswerDao subjectAnswerDao) {
+        this.subjectAnswerDao = subjectAnswerDao;
     }
 
     @Override
@@ -120,6 +131,135 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
         paper.setSubNum(subjectCount);
 
         paperDao.save(paper);
+    }
+
+    @Override
+    public void importPaper(int deptId, String fileName) throws Exception {
+        List<String[]> list = FileUtil.ExcelReaderForList(fileName, 2);
+
+        // list.size > 3, 确保有试题信息
+        if (list != null && list.size() > 3) {
+            // 试题信息list
+            List<String[]> subjectInfoList = list.subList(2, list.size());
+            if (subjectInfoList == null || subjectInfoList.size() < 1) {
+                log.error("没有试题信息!");
+                return;
+            }
+
+            // list的第一行为试卷信息
+            String[] paperInfo = list.get(0);
+            Paper paper = new Paper();
+            paper.setName(paperInfo[0].trim());
+
+            Double fullScore = Double.parseDouble(paperInfo[1].trim());
+            paper.setFullScore(fullScore.intValue());
+
+            Double passScore = Double.parseDouble(paperInfo[2].trim());
+            paper.setPassScore(passScore.intValue());
+
+            Double examTime = Double.parseDouble(paperInfo[3].trim());
+            paper.setExamTime(examTime.intValue());
+
+            paper.setDeptId(deptId);
+
+            paper.setCreator("李鹤");
+            paper.setCreateTime(new Date());
+
+            paper = paperDao.save(paper);
+
+            int subjectCount = 0;
+
+            for (String[] strArray : subjectInfoList) {
+                String type = strArray[0].trim();
+                if (!type.equals("选择题") && !type.equals("判断题")) {
+                    log.error("题目类型错误: 必须为\"选择题\"或\"判断题\", 将跳过此次循环, 继续导入下一个题目!");
+                    continue;
+                }
+
+                int mark;
+                try {
+                    Double d = Double.parseDouble(strArray[1].trim());
+                    mark = d.intValue();
+                } catch (NumberFormatException e) {
+                    log.error("分值类型错误, 必须为正整数, 将跳过此次循环, 继续导入下一个题目! 分值为: " + strArray[1]);
+                    continue;
+                }
+
+                String desc = strArray[2].trim();
+                if (StringUtil.isNullStr(desc)) {
+                    log.error("题目描述为空, 将跳过此次循环, 继续导入下一个题目!");
+                    continue;
+                }
+
+                Subject subject = new Subject();
+                subject.setDeptId(deptId);
+                subject.setDescription(desc);
+                subject.setMark(mark);
+                subject.setCreator("李鹤");
+                subject.setCreateTime(new Date());
+
+                if (type.equals("选择题")) {
+                    subject.setType(0);
+                    subject.setCorrect(null);
+                    subject = subjectDao.save(subject);
+
+                    for (int i = 3; i < strArray.length; i++) {
+                        String answer = strArray[i];
+                        if (!StringUtil.isNullStr(answer)) {
+                            SubjectAnswer subjectAnswer = new SubjectAnswer();
+                            subjectAnswer.setSubjectId(subject.getId());
+
+                            if (answer.contains("$")) {
+                                // 如果是正确答案
+                                String[] s = answer.split("\\$");
+                                subjectAnswer.setDescription(s[0]);
+
+                                if (s[1].trim().equals("正确")) {
+                                    subjectAnswer.setCorrect(1);
+                                } else {
+                                    subjectAnswer.setCorrect(0);
+                                }
+                            } else {
+                                subjectAnswer.setDescription(answer);
+                                subjectAnswer.setCorrect(0);
+                            }
+
+                            subjectAnswerDao.save(subjectAnswer);
+                        }
+                    }
+
+                }
+
+                if (type.equals("判断题")) {
+                    subject.setType(1);
+                    if (strArray[3].trim().equals("正确")) {
+                        subject.setCorrect(1);
+                    } else {
+                        subject.setCorrect(0);
+                    }
+                    subject = subjectDao.save(subject);
+                }
+
+                // 如果程序可以运行到这里, subject一定进行过保存操作
+                // 不满足条件的subject已经被前边的判断条件过滤掉了
+                subjectCount++;
+
+                PaperSubject paperSubject = new PaperSubject();
+                paperSubject.setPaperId(paper.getId());
+                paperSubject.setSubjectId(subject.getId());
+
+                paperSubjectDao.save(paperSubject);
+            }
+
+            // 更新题目数量
+            paper.setSubNum(subjectCount);
+            paperDao.save(paper);
+        } else {
+            log.error("从excel文件读取的list为空!!");
+        }
+
+        // 删除临时文件
+        FileUtil.deleteFile(new File(fileName));
     }
 
     /**

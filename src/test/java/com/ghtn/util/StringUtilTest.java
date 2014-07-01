@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by lihe on 14-6-30.
@@ -28,7 +27,7 @@ public class StringUtilTest {
         System.out.println(random.nextInt(10));*/
 
         // 0~10, 9个不相等的随机数
-        Random random = new Random();
+        /*Random random = new Random();
         List<Integer> randomList = new ArrayList<>();
         while (true) {
             if (randomList.size() == 9) {
@@ -42,7 +41,15 @@ public class StringUtilTest {
 
         for (int i = 0; i < randomList.size(); i++) {
             System.out.println(randomList.get(i));
+        }*/
+
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(i + "");
         }
+
+        List<String> subList = list.subList(3, list.size());
+        System.out.println(subList.size());
     }
 
 }

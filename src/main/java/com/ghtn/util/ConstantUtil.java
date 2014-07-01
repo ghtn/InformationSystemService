@@ -22,6 +22,8 @@ public class ConstantUtil {
      */
     public static String UPLOAD_TEMP_PATH;
 
+    public static String WEB_RESOURCES_PATH;
+
     public static final String SUCCESS = "success";
 
     static {
@@ -31,6 +33,7 @@ public class ConstantUtil {
             prop.load(in);
             INDEX_BASE = prop.getProperty("hibernate.search.default.indexBase").trim();
             UPLOAD_TEMP_PATH = prop.getProperty("upload.temp.path").trim();
+            WEB_RESOURCES_PATH = prop.getProperty("web.resources.path").trim();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
