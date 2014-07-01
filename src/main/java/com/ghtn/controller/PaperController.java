@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.util.Map;
@@ -57,6 +58,12 @@ public class PaperController extends BaseController {
     public Map<String, Object> importPaper(int deptId, HttpSession session) throws Exception {
         paperManager.importPaper(deptId, ConstantUtil.UPLOAD_TEMP_PATH + "/" + session.getAttribute("paperFileName"));
         return operationSuccess();
+    }
+
+    @RequestMapping("/downloadTemplate")
+    @ResponseBody
+    public String downloadTemplate(String fileName, HttpServletResponse response) throws Exception {
+        return FileUtil.downloadFile(fileName, response);
     }
 
 }
