@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -64,6 +65,16 @@ public class PaperController extends BaseController {
     @ResponseBody
     public String downloadTemplate(String fileName, HttpServletResponse response) throws Exception {
         return FileUtil.downloadFile(fileName, response);
+    }
+
+    @RequestMapping("/listPaperByPage")
+    @ResponseBody
+    public Map<String, Object> listPaperByPage(int start, int limit, String startDate, String endDate, int deptId, int status) throws ParseException {
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", paperManager.getCount(startDate, endDate, deptId, status));
+        map.put("items", paperManager.listPaperByPage(start, limit, startDate, endDate, deptId, status));
+
+        return map;
     }
 
 }

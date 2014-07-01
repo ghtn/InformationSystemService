@@ -1,9 +1,6 @@
 package com.ghtn.service.impl;
 
-import com.ghtn.dao.PaperDao;
-import com.ghtn.dao.PaperSubjectDao;
-import com.ghtn.dao.SubjectAnswerDao;
-import com.ghtn.dao.SubjectDao;
+import com.ghtn.dao.*;
 import com.ghtn.model.Paper;
 import com.ghtn.model.PaperSubject;
 import com.ghtn.model.Subject;
@@ -12,6 +9,7 @@ import com.ghtn.service.PaperManager;
 import com.ghtn.util.DateUtil;
 import com.ghtn.util.FileUtil;
 import com.ghtn.util.StringUtil;
+import com.ghtn.vo.PaperVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +59,13 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
     @Resource
     public void setSubjectAnswerDao(SubjectAnswerDao subjectAnswerDao) {
         this.subjectAnswerDao = subjectAnswerDao;
+    }
+
+    private DepartmentDao departmentDao;
+
+    @Resource
+    public void setDepartmentDao(DepartmentDao departmentDao) {
+        this.departmentDao = departmentDao;
     }
 
     @Override
@@ -262,6 +267,31 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
         FileUtil.deleteFile(new File(fileName));
     }
 
+    @Override
+    public List<PaperVO> listPaperByPage(int start, int limit, String startDate, String endDate, int deptId, int status) throws ParseException {
+        if (!StringUtil.isNullStr(startDate)) {
+            startDate += " 00:00:00";
+        }
+        if (!StringUtil.isNullStr(endDate)) {
+            endDate += " 23:59:59";
+        }
+
+        List<Paper> list = paperDao.listPaperByPage(start, limit, DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate), deptId, status);
+
+        return transformToVO(list);
+    }
+
+    @Override
+    public Long getCount(String startDate, String endDate, int deptId, int status) throws ParseException {
+        if (!StringUtil.isNullStr(startDate)) {
+            startDate += " 00:00:00";
+        }
+        if (!StringUtil.isNullStr(endDate)) {
+            endDate += " 23:59:59";
+        }
+        return paperDao.getCount(DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate), deptId, status);
+    }
+
     /**
      * 随机并保存题库
      *
@@ -314,5 +344,38 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
         }
 
         return randomList;
+    }
+
+    private List<PaperVO> transformToVO(List<Paper> list) {
+        List<PaperVO> returnList = new ArrayList<>();
+
+        if (list != null && list.size() > 0) {
+            for (Paper paper : list) {
+                PaperVO vo = new PaperVO();
+
+                vo.setId(paper.getId());
+                vo.setName(paper.getName());
+                vo.setFullScore(paper.getFullScore());
+                vo.setPassScore(paper.getPassScore());
+                vo.setDeptId(paper.getDeptId());
+                vo.setDeptName(departmentDao.getDeptName(paper.getDeptId()));
+                vo.setExamTime(paper.getExamTime());
+                vo.setCreator(paper.getCreator());
+                vo.setCreateTime(DateUtil.dateToString(paper.getCreateTime()));
+                vo.setSubNum(paper.getSubNum());
+
+                vo.setStatus(paper.getStatus());
+                if (paper.getStatus() == 0) {
+                    vo.setStatusDesc("未发布");
+                } else if (paper.getStatus() == 1) {
+                    vo.setStatusDesc("已发布");
+                }
+
+                returnList.add(vo);
+            }
+        }
+
+        return returnList;
+
     }
 }

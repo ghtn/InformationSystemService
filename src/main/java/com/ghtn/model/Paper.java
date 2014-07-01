@@ -1,6 +1,7 @@
 package com.ghtn.model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -17,6 +18,11 @@ public class Paper {
     private String creator;
     private Date createTime;
     private Integer subNum;
+    private Integer status;
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
 
     @Id
     @GeneratedValue
@@ -108,6 +114,16 @@ public class Paper {
 
     public void setSubNum(Integer subNum) {
         this.subNum = subNum;
+    }
+
+    @Basic
+    @Column(name = "status", nullable = true, insertable = true, updatable = true)
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override
