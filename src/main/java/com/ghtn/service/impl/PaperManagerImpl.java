@@ -72,6 +72,7 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
     public void addPaper(Paper paper, String paramStr) {
         paper.setCreator("李鹤");
         paper.setCreateTime(new Date());
+        paper.setStatus(0);
 
         String[] subjectIds = null;
 
@@ -101,9 +102,10 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
             log.error("题目数量错误!!选择题数量 : " + choiceSubNum + ", 判断题数量 : " + judgeSubNum);
             return;
         }
-
+        // TODO : 修改创建者
         paper.setCreator("李鹤");
         paper.setCreateTime(new Date());
+        paper.setStatus(0);
         // 保存paper, 获取paperId
         paper = paperDao.save(paper);
 
@@ -167,8 +169,10 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
 
             paper.setDeptId(deptId);
 
+            // TODO : 修改创建者
             paper.setCreator("李鹤");
             paper.setCreateTime(new Date());
+            paper.setStatus(0);
 
             paper = paperDao.save(paper);
 
@@ -290,6 +294,34 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
             endDate += " 23:59:59";
         }
         return paperDao.getCount(DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate), deptId, status);
+    }
+
+    @Override
+    public void publishPaper(int id) {
+        Paper paper = paperDao.get(id);
+        if (paper != null) {
+            paper.setStatus(1);
+            paperDao.save(paper);
+        } else {
+            log.error("试卷为空!!");
+        }
+    }
+
+    @Override
+    public void revokePaper(int id) {
+        Paper paper = paperDao.get(id);
+        if (paper != null) {
+            paper.setStatus(0);
+            paperDao.save(paper);
+        } else {
+            log.error("试卷为空!!");
+        }
+    }
+
+    @Override
+    public void removePaper(int id) {
+        paperDao.remove(id);
+        paperSubjectDao.removePaperSubject(id);
     }
 
     /**

@@ -35,4 +35,10 @@ public class PaperManagerTest extends BaseTestCase {
     public void testImport() throws Exception {
         paperManager.importPaper(2, "/Users/lihe/Documents/试卷模板.xls");
     }
+
+    @Test
+    public void testRemove() {
+        paperManager.removePaper(1);
+    }
+
 }

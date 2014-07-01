@@ -77,4 +77,25 @@ public class PaperController extends BaseController {
         return map;
     }
 
+    @RequestMapping("/publish")
+    @ResponseBody
+    public Map<String, Object> publishPaper(int id) throws Exception {
+        paperManager.publishPaper(id);
+        return operationSuccess();
+    }
+
+    @RequestMapping("/revoke")
+    @ResponseBody
+    public Map<String, Object> revokePaper(int id) throws Exception {
+        paperManager.revokePaper(id);
+        return operationSuccess();
+    }
+
+    @RequestMapping("/remove")
+    @ResponseBody
+    public Map<String, Object> removePaper(int id) throws Exception {
+        paperManager.removePaper(id);
+        return operationSuccess();
+    }
+
 }

@@ -20,4 +20,11 @@ public interface PaperManager extends GenericManager<Paper, Integer> {
     List<PaperVO> listPaperByPage(int start, int limit, String startDate, String endDate, int deptId, int status) throws ParseException;
 
     Long getCount(String startDate, String endDate, int deptId, int status) throws ParseException;
+
+    void publishPaper(int id);
+
+    void revokePaper(int id);
+
+    void removePaper(int id);
+
 }

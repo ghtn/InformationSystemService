@@ -33,7 +33,7 @@ public class PaperDaoHibernate extends GenericDaoHibernate<Paper, Integer> imple
         if (deptId > 0) {
             c.add(Restrictions.eq("deptId", deptId));
         }
-        if (status > 0) {
+        if (status >= 0) {
             c.add(Restrictions.eq("status", status));
         }
         return c.setFirstResult(start).setMaxResults(limit).addOrder(Order.desc("id")).list();
@@ -51,7 +51,7 @@ public class PaperDaoHibernate extends GenericDaoHibernate<Paper, Integer> imple
         if (deptId > 0) {
             c.add(Restrictions.eq("deptId", deptId));
         }
-        if (status > 0) {
+        if (status >= 0) {
             c.add(Restrictions.eq("status", status));
         }
         return (Long) c.setProjection(Projections.count("id")).uniqueResult();

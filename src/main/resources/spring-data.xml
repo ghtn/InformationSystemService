@@ -78,6 +78,8 @@
             <tx:method name="list*" propagation="REQUIRED" read-only="true"/>
             <tx:method name="import*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="gen*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="publish*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="revoke*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="*" read-only="true"/>
         </tx:attributes>
     </tx:advice>

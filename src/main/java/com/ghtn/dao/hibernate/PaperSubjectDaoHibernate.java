@@ -15,4 +15,9 @@ public class PaperSubjectDaoHibernate extends GenericDaoHibernate<PaperSubject, 
         super(PaperSubject.class);
     }
 
+    @Override
+    public void removePaperSubject(int paperId) {
+        String hql = "delete from PaperSubject ps where ps.paperId = ?";
+        getSession().createQuery(hql).setInteger(0, paperId).executeUpdate();
+    }
 }
