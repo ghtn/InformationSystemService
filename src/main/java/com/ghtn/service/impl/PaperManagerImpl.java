@@ -6,10 +6,12 @@ import com.ghtn.model.PaperSubject;
 import com.ghtn.model.Subject;
 import com.ghtn.model.SubjectAnswer;
 import com.ghtn.service.PaperManager;
+import com.ghtn.service.SubjectManager;
 import com.ghtn.util.DateUtil;
 import com.ghtn.util.FileUtil;
 import com.ghtn.util.StringUtil;
 import com.ghtn.vo.PaperVO;
+import com.ghtn.vo.SubjectVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +68,13 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
     @Resource
     public void setDepartmentDao(DepartmentDao departmentDao) {
         this.departmentDao = departmentDao;
+    }
+
+    private SubjectManager subjectManager;
+
+    @Resource
+    public void setSubjectManager(SubjectManager subjectManager) {
+        this.subjectManager = subjectManager;
     }
 
     @Override
@@ -324,6 +333,53 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
         paperSubjectDao.removePaperSubject(id);
     }
 
+    @Override
+    public List<SubjectVO> getSubjects(int paperId) throws Exception {
+        List<Subject> list = paperDao.getSubjects(paperId);
+        return subjectManager.transformToVO(list);
+    }
+
+    @Override
+    public int updatePaperSubject(int id, String paramStr) throws Exception {
+        // 删除以前的试题
+        paperSubjectDao.removePaperSubject(id);
+
+        // 更新题目数量
+        Paper paper = paperDao.get(id);
+        String[] subjectIds;
+        if (!StringUtil.isNullStr(paramStr)) {
+            subjectIds = paramStr.split("#");
+            paper.setSubNum(subjectIds.length);
+        } else {
+            paper.setSubNum(0);
+            throw new Exception("更新试卷出错, 题目数量为0!paramStr = " + paramStr);
+        }
+        paper = paperDao.save(paper);
+
+        if (subjectIds != null && subjectIds.length > 0) {
+            for (int i = 0; i < subjectIds.length; i++) {
+                PaperSubject paperSubject = new PaperSubject();
+
+                paperSubject.setPaperId(id);
+                paperSubject.setSubjectId(Integer.parseInt(subjectIds[i]));
+
+                paperSubjectDao.save(paperSubject);
+            }
+        }
+
+        return paper.getSubNum();
+    }
+
+    @Override
+    public void updatePaper(Paper paper) {
+        // TODO : 修改创建者
+        paper.setCreator("李鹤");
+        paper.setCreateTime(new Date());
+        paper.setStatus(0);
+
+        paperDao.save(paper);
+    }
+
     /**
      * 随机并保存题库
      *
@@ -385,22 +441,27 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
             for (Paper paper : list) {
                 PaperVO vo = new PaperVO();
 
-                vo.setId(paper.getId());
-                vo.setName(paper.getName());
-                vo.setFullScore(paper.getFullScore());
-                vo.setPassScore(paper.getPassScore());
-                vo.setDeptId(paper.getDeptId());
-                vo.setDeptName(departmentDao.getDeptName(paper.getDeptId()));
-                vo.setExamTime(paper.getExamTime());
-                vo.setCreator(paper.getCreator());
-                vo.setCreateTime(DateUtil.dateToString(paper.getCreateTime()));
-                vo.setSubNum(paper.getSubNum());
+                try {
+                    vo.setId(paper.getId());
+                    vo.setName(paper.getName());
+                    vo.setFullScore(paper.getFullScore());
+                    vo.setPassScore(paper.getPassScore());
+                    vo.setDeptId(paper.getDeptId());
+                    vo.setDeptName(departmentDao.getDeptName(paper.getDeptId()));
+                    vo.setExamTime(paper.getExamTime());
+                    vo.setCreator(paper.getCreator());
+                    vo.setCreateTime(DateUtil.dateToString(paper.getCreateTime()));
+                    vo.setSubNum(paper.getSubNum());
 
-                vo.setStatus(paper.getStatus());
-                if (paper.getStatus() == 0) {
-                    vo.setStatusDesc("未发布");
-                } else if (paper.getStatus() == 1) {
-                    vo.setStatusDesc("已发布");
+                    vo.setStatus(paper.getStatus());
+                    if (paper.getStatus() == 0) {
+                        vo.setStatusDesc("未发布");
+                    } else if (paper.getStatus() == 1) {
+                        vo.setStatusDesc("已发布");
+                    }
+                } catch (Exception e) {
+                    log.error("转换视图错误!跳过此次循环!");
+                    continue;
                 }
 
                 returnList.add(vo);

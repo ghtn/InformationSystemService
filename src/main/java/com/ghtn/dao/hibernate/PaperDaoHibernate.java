@@ -2,6 +2,7 @@ package com.ghtn.dao.hibernate;
 
 import com.ghtn.dao.PaperDao;
 import com.ghtn.model.Paper;
+import com.ghtn.model.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -55,5 +56,12 @@ public class PaperDaoHibernate extends GenericDaoHibernate<Paper, Integer> imple
             c.add(Restrictions.eq("status", status));
         }
         return (Long) c.setProjection(Projections.count("id")).uniqueResult();
+    }
+
+    @Override
+    public List<Subject> getSubjects(int paperId) {
+        String hql = "select new Subject (s.id, s.deptId, s.description, s.mark, s.type, s.correct, s.creator, s.createTime)from Subject s , PaperSubject ps";
+        hql += " where ps.paperId = ? and s.id = ps.subjectId";
+        return getSession().createQuery(hql).setInteger(0, paperId).list();
     }
 }

@@ -2,6 +2,7 @@ package com.ghtn.service;
 
 import com.ghtn.model.Paper;
 import com.ghtn.vo.PaperVO;
+import com.ghtn.vo.SubjectVO;
 
 import java.text.ParseException;
 import java.util.List;
@@ -26,5 +27,11 @@ public interface PaperManager extends GenericManager<Paper, Integer> {
     void revokePaper(int id);
 
     void removePaper(int id);
+
+    List<SubjectVO> getSubjects(int paperId) throws Exception;
+
+    int updatePaperSubject(int id, String paramStr) throws Exception;
+
+    void updatePaper(Paper paper);
 
 }

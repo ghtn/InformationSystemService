@@ -17,6 +17,20 @@ public class Subject {
     private String creator;
     private Date createTime;
 
+    public Subject() {
+    }
+
+    public Subject(int id, int deptId, String description, Integer mark, Integer type, Integer correct, String creator, Date createTime) {
+        this.id = id;
+        this.deptId = deptId;
+        this.description = description;
+        this.mark = mark;
+        this.type = type;
+        this.correct = correct;
+        this.creator = creator;
+        this.createTime = createTime;
+    }
+
     @Id
     @GeneratedValue
     @Column(name = "id", nullable = false, insertable = true, updatable = true)

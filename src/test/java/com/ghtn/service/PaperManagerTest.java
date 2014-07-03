@@ -41,4 +41,9 @@ public class PaperManagerTest extends BaseTestCase {
         paperManager.removePaper(1);
     }
 
+    @Test
+    public void testUpdate() throws Exception {
+        paperManager.updatePaperSubject(7, "144#145");
+    }
+
 }

@@ -4,6 +4,7 @@ import com.ghtn.model.Paper;
 import com.ghtn.service.PaperManager;
 import com.ghtn.util.ConstantUtil;
 import com.ghtn.util.FileUtil;
+import com.ghtn.vo.SubjectVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,6 +97,28 @@ public class PaperController extends BaseController {
     @ResponseBody
     public Map<String, Object> removePaper(int id) throws Exception {
         paperManager.removePaper(id);
+        return operationSuccess();
+    }
+
+    @RequestMapping("/getSubjects")
+    @ResponseBody
+    public List<SubjectVO> getSubjects(int paperId) throws Exception {
+        return paperManager.getSubjects(paperId);
+    }
+
+    @RequestMapping("/updateSubject")
+    @ResponseBody
+    public Map<String, Object> updatePaperSubject(int id, String paramStr) throws Exception {
+        int subNum = paperManager.updatePaperSubject(id, paramStr);
+        Map<String, Object> map = operationSuccess();
+        map.put("subNum", subNum);
+        return map;
+    }
+
+    @RequestMapping("/update")
+    @ResponseBody
+    public Map<String, Object> updatePaper(Paper paper) throws Exception {
+        paperManager.updatePaper(paper);
         return operationSuccess();
     }
 

@@ -260,7 +260,7 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
         return transformToVO(list);
     }
 
-    private List<SubjectVO> transformToVO(List<Subject> list) throws Exception {
+    public List<SubjectVO> transformToVO(List<Subject> list) throws Exception {
         List<SubjectVO> returnList = new ArrayList<>();
 
         if (list != null && list.size() > 0) {

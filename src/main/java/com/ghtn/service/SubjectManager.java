@@ -24,4 +24,6 @@ public interface SubjectManager extends GenericManager<Subject, Integer> {
 
     List<SubjectVO> listSubjectByDate(String startDate, String endDate) throws Exception;
 
+    List<SubjectVO> transformToVO(List<Subject> list) throws Exception;
+
 }
