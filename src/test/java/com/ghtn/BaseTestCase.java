@@ -2,6 +2,7 @@ package com.ghtn;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
@@ -13,5 +14,5 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:spring*.xml")
-public abstract class BaseTestCase {
+public abstract class BaseTestCase extends AbstractTransactionalJUnit4SpringContextTests {
 }

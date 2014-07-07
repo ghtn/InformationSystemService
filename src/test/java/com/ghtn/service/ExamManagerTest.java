@@ -1,11 +1,13 @@
 package com.ghtn.service;
 
 import com.ghtn.BaseTestCase;
+import com.ghtn.model.Employee;
 import com.ghtn.model.Exam;
 import org.junit.Test;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by lihe on 14-7-4.
@@ -33,5 +35,11 @@ public class ExamManagerTest extends BaseTestCase {
         exam.setExamTime(new Date());
 
         examManager.save(exam);
+    }
+
+    @Test
+    public void testGetEmps() {
+        List<Employee> list = examManager.getEmps(7);
+        System.out.println(list.size());
     }
 }

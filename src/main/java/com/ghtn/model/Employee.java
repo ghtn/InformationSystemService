@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import java.sql.Date;
 
 /**
- * Created by lihe on 14-6-20.
+ * Created by lihe on 14-7-7.
  */
 @Entity
 public class Employee {
@@ -27,7 +27,7 @@ public class Employee {
     private int age;
 
     @Basic
-    @javax.persistence.Column(name = "age", nullable = false, insertable = true, updatable = true)
+    @javax.persistence.Column(name = "age", nullable = true, insertable = true, updatable = true)
     public int getAge() {
         return age;
     }
@@ -144,16 +144,28 @@ public class Employee {
         this.country = country;
     }
 
-    private String depName;
+    private Integer deptId;
 
     @Basic
-    @javax.persistence.Column(name = "depName", nullable = true, insertable = true, updatable = true, length = 255)
-    public String getDepName() {
-        return depName;
+    @javax.persistence.Column(name = "deptId", nullable = true, insertable = true, updatable = true)
+    public Integer getDeptId() {
+        return deptId;
     }
 
-    public void setDepName(String depName) {
-        this.depName = depName;
+    public void setDeptId(Integer deptId) {
+        this.deptId = deptId;
+    }
+
+    private String deptName;
+
+    @Basic
+    @javax.persistence.Column(name = "deptName", nullable = true, insertable = true, updatable = true, length = 255)
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
     }
 
     private String domicilePlace;
@@ -706,7 +718,8 @@ public class Employee {
         if (conversionTime != null ? !conversionTime.equals(employee.conversionTime) : employee.conversionTime != null)
             return false;
         if (country != null ? !country.equals(employee.country) : employee.country != null) return false;
-        if (depName != null ? !depName.equals(employee.depName) : employee.depName != null) return false;
+        if (deptId != null ? !deptId.equals(employee.deptId) : employee.deptId != null) return false;
+        if (deptName != null ? !deptName.equals(employee.deptName) : employee.deptName != null) return false;
         if (domicilePlace != null ? !domicilePlace.equals(employee.domicilePlace) : employee.domicilePlace != null)
             return false;
         if (duty != null ? !duty.equals(employee.duty) : employee.duty != null) return false;
@@ -781,7 +794,8 @@ public class Employee {
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         result = 31 * result + (conversionTime != null ? conversionTime.hashCode() : 0);
         result = 31 * result + (country != null ? country.hashCode() : 0);
-        result = 31 * result + (depName != null ? depName.hashCode() : 0);
+        result = 31 * result + (deptId != null ? deptId.hashCode() : 0);
+        result = 31 * result + (deptName != null ? deptName.hashCode() : 0);
         result = 31 * result + (domicilePlace != null ? domicilePlace.hashCode() : 0);
         result = 31 * result + (duty != null ? duty.hashCode() : 0);
         result = 31 * result + (dutyTime != null ? dutyTime.hashCode() : 0);

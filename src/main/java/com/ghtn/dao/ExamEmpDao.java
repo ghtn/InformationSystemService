@@ -9,4 +9,5 @@ public interface ExamEmpDao extends GenericDao<ExamEmp, Integer> {
 
     void removeExamEmp(int examId);
 
+
 }

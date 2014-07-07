@@ -1,7 +1,9 @@
 package com.ghtn.dao.hibernate;
 
 import com.ghtn.dao.ExamDao;
+import com.ghtn.model.Employee;
 import com.ghtn.model.Exam;
+import com.ghtn.util.StringUtil;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -50,4 +52,28 @@ public class ExamDaoHibernate extends GenericDaoHibernate<Exam, Integer> impleme
         }
         return (Long) c.setProjection(Projections.count("id")).uniqueResult();
     }
+
+    @Override
+    public List<Employee> listEmp(int deptId, String idCard, String name) {
+        Criteria c = getSession().createCriteria(Employee.class);
+        if (deptId > 0) {
+            c.add(Restrictions.eq("deptId", deptId));
+        }
+        if (!StringUtil.isNullStr(idCard)) {
+            c.add(Restrictions.like("card", "%" + idCard + "%"));
+        }
+        if (!StringUtil.isNullStr(name)) {
+            c.add(Restrictions.like("name", "%" + name + "%"));
+        }
+
+        return c.list();
+    }
+
+    @Override
+    public List<Object[]> getEmps(int examId) {
+        String hql = "from Employee e, ExamEmp ee where e.id = ee.empId and ee.examId = :examId";
+        return getSession().createQuery(hql).setInteger("examId", examId).list();
+    }
+
+
 }

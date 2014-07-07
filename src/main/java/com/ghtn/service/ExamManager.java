@@ -1,5 +1,6 @@
 package com.ghtn.service;
 
+import com.ghtn.model.Employee;
 import com.ghtn.model.Exam;
 import com.ghtn.vo.ExamVO;
 
@@ -15,8 +16,14 @@ public interface ExamManager extends GenericManager<Exam, Integer> {
 
     Long getCount(String startDate, String endDate, int deptId) throws ParseException;
 
-    void addExam(String name, int paperId, String place, String examTime, HttpSession session) throws ParseException;
+    void addExam(String name, int paperId, String place, String examTime, String paramStr, HttpSession session) throws ParseException;
 
     void removeExam(Exam exam);
+
+    List<Employee> listEmp(int deptId, String idCard, String name);
+
+    List<Employee> getEmps(int examId);
+
+    void updateExam(int id, String name, int paperId, String place, String examTime, String paramStr, HttpSession session) throws ParseException;
 
 }
