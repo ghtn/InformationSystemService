@@ -10,15 +10,15 @@ import java.util.List;
  */
 public interface SubjectDao extends GenericDao<Subject, Integer> {
 
-    List<Subject> listSubjectByPage(int start, int limit);
+    List<Subject> listSubjectByPage(int start, int limit, int deptId);
 
-    List<Subject> listSubjectByPage(int start, int limit, int type);
+    List<Subject> listSubjectByPage(int start, int limit, int type, int deptId);
 
-    Long getCount();
+    Long getCount(int deptId);
 
-    Long getCount(int type);
+    Long getCount(int type, int deptId);
 
-    List<Subject> listSubjectByDate(Date startDate, Date endDate);
+    List<Subject> listSubjectByDate(Date startDate, Date endDate, int deptId);
 
-    List<Subject> listSubjectByDate(Date startDate, Date endDate, int type);
+    List<Subject> listSubjectByDate(Date startDate, Date endDate, int type, int deptId);
 }

@@ -2,8 +2,8 @@ package com.ghtn.controller;
 
 import com.ghtn.model.Paper;
 import com.ghtn.service.PaperManager;
-import com.ghtn.util.ConstantUtil;
 import com.ghtn.util.FileUtil;
+import com.ghtn.vo.PaperVO;
 import com.ghtn.vo.SubjectVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,17 +33,29 @@ public class PaperController extends BaseController {
         this.paperManager = paperManager;
     }
 
+    @RequestMapping("/getPublish")
+    @ResponseBody
+    public List<PaperVO> getPublishPapers() {
+        // TODO : deptId从session中获取
+        return paperManager.listPaper(2, 1);
+    }
+
+
     @RequestMapping("/add")
     @ResponseBody
-    public Map<String, Object> addPaper(Paper paper, String paramStr) {
-        paperManager.addPaper(paper, paramStr);
+    public Map<String, Object> addPaper(Paper paper, String paramStr, HttpSession session) {
+        // TODO : deptId从session获取
+        paperManager.addPaper(paper, paramStr, session);
         return operationSuccess();
     }
 
     @RequestMapping("/gen")
     @ResponseBody
-    public Map<String, Object> genPaper(Paper paper, String startDate, String endDate, int choiceSubNum, int judgeSubNumber) throws ParseException {
-        paperManager.genPaper(paper, startDate, endDate, choiceSubNum, judgeSubNumber);
+    public Map<String, Object> genPaper(Paper paper, String startDate, String endDate,
+                                        int choiceSubNum, int judgeSubNumber,
+                                        HttpSession session) throws ParseException {
+        // TODO : deptId从session获取
+        paperManager.genPaper(paper, startDate, endDate, choiceSubNum, judgeSubNumber, session);
         return operationSuccess();
     }
 
@@ -58,8 +70,9 @@ public class PaperController extends BaseController {
 
     @RequestMapping("/import")
     @ResponseBody
-    public Map<String, Object> importPaper(int deptId, HttpSession session) throws Exception {
-        paperManager.importPaper(deptId, ConstantUtil.UPLOAD_TEMP_PATH + "/" + session.getAttribute("paperFileName"));
+    public Map<String, Object> importPaper(HttpSession session) throws Exception {
+        // TODO : deptId从session获取
+        paperManager.importPaper(session);
         return operationSuccess();
     }
 
@@ -71,10 +84,12 @@ public class PaperController extends BaseController {
 
     @RequestMapping("/listPaperByPage")
     @ResponseBody
-    public Map<String, Object> listPaperByPage(int start, int limit, String startDate, String endDate, int deptId, int status) throws ParseException {
+    public Map<String, Object> listPaperByPage(int start, int limit, String startDate, String endDate, int status) throws ParseException {
         Map<String, Object> map = new HashMap<>();
-        map.put("total", paperManager.getCount(startDate, endDate, deptId, status));
-        map.put("items", paperManager.listPaperByPage(start, limit, startDate, endDate, deptId, status));
+
+        // TODO : deptId从session获取
+        map.put("total", paperManager.getCount(startDate, endDate, 2, status));
+        map.put("items", paperManager.listPaperByPage(start, limit, startDate, endDate, 2, status));
 
         return map;
     }

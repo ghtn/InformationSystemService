@@ -4,6 +4,7 @@ import com.ghtn.model.Paper;
 import com.ghtn.vo.PaperVO;
 import com.ghtn.vo.SubjectVO;
 
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.util.List;
 
@@ -12,11 +13,11 @@ import java.util.List;
  */
 public interface PaperManager extends GenericManager<Paper, Integer> {
 
-    void addPaper(Paper paper, String paramStr);
+    void addPaper(Paper paper, String paramStr, HttpSession session);
 
-    void genPaper(Paper paper, String startDate, String endDate, int choiceSubNum, int judgeSubNum) throws ParseException;
+    void genPaper(Paper paper, String startDate, String endDate, int choiceSubNum, int judgeSubNum, HttpSession session) throws ParseException;
 
-    void importPaper(int deptId, String fileName) throws Exception;
+    void importPaper(HttpSession session) throws Exception;
 
     List<PaperVO> listPaperByPage(int start, int limit, String startDate, String endDate, int deptId, int status) throws ParseException;
 
@@ -34,4 +35,5 @@ public interface PaperManager extends GenericManager<Paper, Integer> {
 
     void updatePaper(Paper paper);
 
+    List<PaperVO> listPaper(int deptId, int status);
 }

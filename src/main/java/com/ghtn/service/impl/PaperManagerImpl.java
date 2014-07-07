@@ -7,6 +7,7 @@ import com.ghtn.model.Subject;
 import com.ghtn.model.SubjectAnswer;
 import com.ghtn.service.PaperManager;
 import com.ghtn.service.SubjectManager;
+import com.ghtn.util.ConstantUtil;
 import com.ghtn.util.DateUtil;
 import com.ghtn.util.FileUtil;
 import com.ghtn.util.StringUtil;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -78,10 +80,13 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
     }
 
     @Override
-    public void addPaper(Paper paper, String paramStr) {
-        paper.setCreator("李鹤");
+    public void addPaper(Paper paper, String paramStr, HttpSession session) {
+        // TODO : 修改创建者为登录者
+        paper.setCreator(0);
+        paper.setCreatorName("李鹤");
         paper.setCreateTime(new Date());
         paper.setStatus(0);
+        paper.setDeptId(2);
 
         String[] subjectIds = null;
 
@@ -106,15 +111,18 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
     }
 
     @Override
-    public void genPaper(Paper paper, String startDate, String endDate, int choiceSubNum, int judgeSubNum) throws ParseException {
+    public void genPaper(Paper paper, String startDate, String endDate, int choiceSubNum, int judgeSubNum, HttpSession session) throws ParseException {
         if (choiceSubNum < 0 || judgeSubNum < 0 || (choiceSubNum == 0 && judgeSubNum == 0)) {
             log.error("题目数量错误!!选择题数量 : " + choiceSubNum + ", 判断题数量 : " + judgeSubNum);
             return;
         }
         // TODO : 修改创建者
-        paper.setCreator("李鹤");
+        int deptId = 2;
+        paper.setCreator(0);
+        paper.setCreatorName("李鹤");
         paper.setCreateTime(new Date());
         paper.setStatus(0);
+        paper.setDeptId(deptId);
         // 保存paper, 获取paperId
         paper = paperDao.save(paper);
 
@@ -129,9 +137,9 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
             endDate += " 23:59:59";
         }
         // 选择题列表
-        List<Subject> choiceSubList = subjectDao.listSubjectByDate(DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate), 0);
+        List<Subject> choiceSubList = subjectDao.listSubjectByDate(DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate), 0, deptId);
         // 判断题列表
-        List<Subject> judgeSubList = subjectDao.listSubjectByDate(DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate), 1);
+        List<Subject> judgeSubList = subjectDao.listSubjectByDate(DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate), 1, deptId);
 
         // 随机选择题
         if (choiceSubList != null && choiceSubList.size() > 0) {
@@ -150,7 +158,9 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
     }
 
     @Override
-    public void importPaper(int deptId, String fileName) throws Exception {
+    public void importPaper(HttpSession session) throws Exception {
+        String fileName = ConstantUtil.UPLOAD_TEMP_PATH + "/" + session.getAttribute("paperFileName");
+        int deptId = 2;
         List<String[]> list = FileUtil.ExcelReaderForList(fileName, 2);
 
         // list.size > 3, 确保有试题信息
@@ -179,7 +189,8 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
             paper.setDeptId(deptId);
 
             // TODO : 修改创建者
-            paper.setCreator("李鹤");
+            paper.setCreator(0);
+            paper.setCreatorName("李鹤");
             paper.setCreateTime(new Date());
             paper.setStatus(0);
 
@@ -213,7 +224,10 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
                 subject.setDeptId(deptId);
                 subject.setDescription(desc);
                 subject.setMark(mark);
-                subject.setCreator("李鹤");
+
+                // TODO : 修改创建者为登录者
+                subject.setCreator(0);
+                subject.setCreatorName("李鹤");
                 subject.setCreateTime(new Date());
 
                 if (type.equals("选择题")) {
@@ -346,6 +360,12 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
 
         // 更新题目数量
         Paper paper = paperDao.get(id);
+
+        // TODO : 修改者为登录者
+        paper.setEditor(0);
+        paper.setEditorName("李鹤");
+        paper.setEditTime(new Date());
+
         String[] subjectIds;
         if (!StringUtil.isNullStr(paramStr)) {
             subjectIds = paramStr.split("#");
@@ -372,12 +392,24 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
 
     @Override
     public void updatePaper(Paper paper) {
-        // TODO : 修改创建者
-        paper.setCreator("李鹤");
-        paper.setCreateTime(new Date());
+        Paper old = paperDao.get(paper.getId());
+        paper.setCreator(old.getCreator());
+        paper.setCreatorName(old.getCreatorName());
+        paper.setCreateTime(old.getCreateTime());
+        paper.setDeptId(old.getDeptId());
+
+        // TODO : 修改者为登录者
+        paper.setEditor(0);
+        paper.setEditorName("李鹤");
+        paper.setEditTime(new Date());
         paper.setStatus(0);
 
         paperDao.save(paper);
+    }
+
+    @Override
+    public List<PaperVO> listPaper(int deptId, int status) {
+        return transformToVO(paperDao.listPaper(deptId, status));
     }
 
     /**
@@ -450,7 +482,22 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
                     vo.setDeptName(departmentDao.getDeptName(paper.getDeptId()));
                     vo.setExamTime(paper.getExamTime());
                     vo.setCreator(paper.getCreator());
+                    vo.setCreatorName(paper.getCreatorName());
                     vo.setCreateTime(DateUtil.dateToString(paper.getCreateTime()));
+
+                    if (paper.getEditor() != null) {
+                        vo.setEditor(paper.getEditor());
+                    }
+
+                    if (!StringUtil.isNullStr(paper.getEditorName())) {
+                        vo.setEditorName(paper.getEditorName());
+                    }
+
+                    if (paper.getEditTime() != null) {
+                        vo.setEditTime(DateUtil.dateToString(paper.getEditTime()));
+                    }
+
+
                     vo.setSubNum(paper.getSubNum());
 
                     vo.setStatus(paper.getStatus());
@@ -461,6 +508,7 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
                     }
                 } catch (Exception e) {
                     log.error("转换视图错误!跳过此次循环!");
+                    e.printStackTrace();
                     continue;
                 }
 

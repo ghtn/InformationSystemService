@@ -3,6 +3,7 @@ package com.ghtn.service;
 import com.ghtn.model.Subject;
 import com.ghtn.vo.SubjectVO;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -10,19 +11,19 @@ import java.util.List;
  */
 public interface SubjectManager extends GenericManager<Subject, Integer> {
 
-    List<SubjectVO> listSubjectByPage(int start, int limit, int type) throws Exception;
+    List<SubjectVO> listSubjectByPage(int start, int limit, int type, int deptId) throws Exception;
 
-    Long getCount(int type);
+    Long getCount(int type, int deptId);
 
-    void addSubject(Subject subject, String paramStr) throws Exception;
+    void addSubject(Subject subject, String paramStr, HttpSession session) throws Exception;
 
     void removeSubject(Subject subject);
 
-    void updateSubject(Subject subject, String paramStr) throws Exception;
+    void updateSubject(Subject subject, String paramStr, HttpSession session) throws Exception;
 
-    void importSubjects(int deptId, String fileName) throws Exception;
+    void importSubjects(HttpSession session) throws Exception;
 
-    List<SubjectVO> listSubjectByDate(String startDate, String endDate) throws Exception;
+    List<SubjectVO> listSubjectByDate(String startDate, String endDate, int deptId) throws Exception;
 
     List<SubjectVO> transformToVO(List<Subject> list) throws Exception;
 

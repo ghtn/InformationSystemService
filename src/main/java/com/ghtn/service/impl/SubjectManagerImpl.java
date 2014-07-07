@@ -6,6 +6,7 @@ import com.ghtn.dao.SubjectDao;
 import com.ghtn.model.Subject;
 import com.ghtn.model.SubjectAnswer;
 import com.ghtn.service.SubjectManager;
+import com.ghtn.util.ConstantUtil;
 import com.ghtn.util.DateUtil;
 import com.ghtn.util.FileUtil;
 import com.ghtn.util.StringUtil;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,37 +54,38 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
     }
 
     @Override
-    public List<SubjectVO> listSubjectByPage(int start, int limit, int type) throws Exception {
+    public List<SubjectVO> listSubjectByPage(int start, int limit, int type, int deptId) throws Exception {
         List<Subject> list;
 
         if (type == -1) {
             // 返回所有类型的题目
-            list = subjectDao.listSubjectByPage(start, limit);
+            list = subjectDao.listSubjectByPage(start, limit, deptId);
         } else {
             // 返回指定类型的题目
-            list = subjectDao.listSubjectByPage(start, limit, type);
+            list = subjectDao.listSubjectByPage(start, limit, type, deptId);
         }
 
         return transformToVO(list);
     }
 
     @Override
-    public Long getCount(int type) {
+    public Long getCount(int type, int deptId) {
         if (type == -1) {
             // 返回题目总量
-            return subjectDao.getCount();
+            return subjectDao.getCount(deptId);
         } else {
             // 返回指定类型的题目总量
-            return subjectDao.getCount(type);
+            return subjectDao.getCount(type, deptId);
         }
     }
 
     @Override
-    public void addSubject(Subject subject, String paramStr) throws Exception {
+    public void addSubject(Subject subject, String paramStr, HttpSession session) throws Exception {
         // TODO : 修改创建者为当前登录者
-        subject.setCreator("李鹤");
-
+        subject.setCreator(0);
+        subject.setCreatorName("李鹤");
         subject.setCreateTime(new Date());
+        subject.setDeptId(2);
 
         // 如果是选择题, 把"是否正确"置为null, 此字段只用于判断题
         if (subject.getType() == 0) {
@@ -121,11 +124,17 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
     }
 
     @Override
-    public void updateSubject(Subject subject, String paramStr) throws Exception {
-        // TODO : 修改创建者为当前登录者
-        subject.setCreator("李鹤");
+    public void updateSubject(Subject subject, String paramStr, HttpSession session) throws Exception {
+        Subject old = subjectDao.get(subject.getId());
+        subject.setCreator(old.getCreator());
+        subject.setCreatorName(old.getCreatorName());
+        subject.setCreateTime(old.getCreateTime());
+        subject.setDeptId(old.getDeptId());
 
-        subject.setCreateTime(new Date());
+        // TODO : 修改者为当前登录者
+        subject.setEditor(0);
+        subject.setEditorName("李鹤");
+        subject.setEditTime(new Date());
 
         // 如果是选择题, 把"是否正确"置为null, 此字段只用于判断题
         if (subject.getType() == 0) {
@@ -167,7 +176,8 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
     }
 
     @Override
-    public void importSubjects(int deptId, String fileName) throws Exception {
+    public void importSubjects(HttpSession session) throws Exception {
+        String fileName = ConstantUtil.UPLOAD_TEMP_PATH + "/" + session.getAttribute("fileName");
         List<String[]> list = FileUtil.ExcelReaderForList(fileName, 2);
         if (list != null && list.size() > 0) {
             for (String[] strArray : list) {
@@ -193,10 +203,13 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
                 }
 
                 Subject subject = new Subject();
-                subject.setDeptId(deptId);
                 subject.setDescription(desc);
                 subject.setMark(mark);
-                subject.setCreator("李鹤");
+
+                // TODO : 创建者为当前登录者
+                subject.setDeptId(2);
+                subject.setCreator(0);
+                subject.setCreatorName("李鹤");
                 subject.setCreateTime(new Date());
 
                 if (type.equals("选择题")) {
@@ -249,14 +262,14 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
     }
 
     @Override
-    public List<SubjectVO> listSubjectByDate(String startDate, String endDate) throws Exception {
+    public List<SubjectVO> listSubjectByDate(String startDate, String endDate, int deptId) throws Exception {
         if (!StringUtil.isNullStr(startDate)) {
             startDate += " 00:00:00";
         }
         if (!StringUtil.isNullStr(endDate)) {
             endDate += " 23:59:59";
         }
-        List<Subject> list = subjectDao.listSubjectByDate(DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate));
+        List<Subject> list = subjectDao.listSubjectByDate(DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate), deptId);
         return transformToVO(list);
     }
 
@@ -279,9 +292,22 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
                     throw new Exception("题目类型错误!!!");
                 }
                 vo.setCreator(subject.getCreator());
+                vo.setCreatorName(subject.getCreatorName());
                 vo.setMark(subject.getMark());
                 vo.setCreateTime(DateUtil.dateToString(subject.getCreateTime()));
                 vo.setCorrect(subject.getCorrect());
+
+                if (subject.getEditor() != null) {
+                    vo.setEditor(subject.getEditor());
+                }
+
+                if (!StringUtil.isNullStr(subject.getEditorName())) {
+                    vo.setEditorName(subject.getEditorName());
+                }
+
+                if (subject.getEditTime() != null) {
+                    vo.setEditTime(DateUtil.dateToString(subject.getEditTime()));
+                }
 
                 returnList.add(vo);
             }

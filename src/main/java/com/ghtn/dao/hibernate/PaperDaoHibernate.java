@@ -60,8 +60,23 @@ public class PaperDaoHibernate extends GenericDaoHibernate<Paper, Integer> imple
 
     @Override
     public List<Subject> getSubjects(int paperId) {
-        String hql = "select new Subject (s.id, s.deptId, s.description, s.mark, s.type, s.correct, s.creator, s.createTime)from Subject s , PaperSubject ps";
+        String hql = "select new Subject (s.id, s.deptId, s.description, s.mark, s.type, s.correct, s.creator,s.creatorName, s.createTime, s.editor, s.editorName, s.editTime)from Subject s , PaperSubject ps";
         hql += " where ps.paperId = ? and s.id = ps.subjectId";
         return getSession().createQuery(hql).setInteger(0, paperId).list();
+    }
+
+    @Override
+    public String getPaperName(int paperId) {
+        return get(paperId).getName();
+    }
+
+    @Override
+    public List<Paper> listPaper(int deptId, int status) {
+        Criteria c = getSession().createCriteria(Paper.class);
+        if (deptId > 0) {
+            c.add(Restrictions.eq("deptId", deptId));
+        }
+        c.add(Restrictions.eq("status", status)).addOrder(Order.desc("id"));
+        return c.list();
     }
 }

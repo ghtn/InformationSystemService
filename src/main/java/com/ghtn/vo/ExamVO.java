@@ -1,18 +1,18 @@
 package com.ghtn.vo;
 
 /**
- * Created by lihe on 14-6-23.
+ * Created by lihe on 14-7-3.
  */
-public class SubjectVO {
+public class ExamVO {
 
     private int id;
     private int deptId;
     private String deptName;
-    private String description;
-    private Integer mark;
-    private Integer type;
-    private String typeDesc;
-    private Integer correct;
+    private int paperId;
+    private String paperName;
+    private String name;
+    private String place;
+    private String examTime;
     private int creator;
     private String creatorName;
     private String createTime;
@@ -44,44 +44,44 @@ public class SubjectVO {
         this.deptName = deptName;
     }
 
-    public String getDescription() {
-        return description;
+    public int getPaperId() {
+        return paperId;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPaperId(int paperId) {
+        this.paperId = paperId;
     }
 
-    public Integer getMark() {
-        return mark;
+    public String getPaperName() {
+        return paperName;
     }
 
-    public void setMark(Integer mark) {
-        this.mark = mark;
+    public void setPaperName(String paperName) {
+        this.paperName = paperName;
     }
 
-    public Integer getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getTypeDesc() {
-        return typeDesc;
+    public String getPlace() {
+        return place;
     }
 
-    public void setTypeDesc(String typeDesc) {
-        this.typeDesc = typeDesc;
+    public void setPlace(String place) {
+        this.place = place;
     }
 
-    public Integer getCorrect() {
-        return correct;
+    public String getExamTime() {
+        return examTime;
     }
 
-    public void setCorrect(Integer correct) {
-        this.correct = correct;
+    public void setExamTime(String examTime) {
+        this.examTime = examTime;
     }
 
     public int getCreator() {
@@ -131,4 +131,5 @@ public class SubjectVO {
     public void setEditTime(String editTime) {
         this.editTime = editTime;
     }
+
 }

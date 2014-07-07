@@ -10,13 +10,14 @@ public class PaperVO {
     private Integer passScore;
     private Integer deptId;
     private Integer examTime;
-    private String creator;
+    private int creator;
+    private String creatorName;
     private String createTime;
     private Integer subNum;
     private Integer status;
-
-    private String deptName;
-    private String statusDesc;
+    private int editor;
+    private String editorName;
+    private String editTime;
 
     public int getId() {
         return id;
@@ -66,12 +67,20 @@ public class PaperVO {
         this.examTime = examTime;
     }
 
-    public String getCreator() {
+    public int getCreator() {
         return creator;
     }
 
-    public void setCreator(String creator) {
+    public void setCreator(int creator) {
         this.creator = creator;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 
     public String getCreateTime() {
@@ -98,6 +107,30 @@ public class PaperVO {
         this.status = status;
     }
 
+    public int getEditor() {
+        return editor;
+    }
+
+    public void setEditor(int editor) {
+        this.editor = editor;
+    }
+
+    public String getEditorName() {
+        return editorName;
+    }
+
+    public void setEditorName(String editorName) {
+        this.editorName = editorName;
+    }
+
+    public String getEditTime() {
+        return editTime;
+    }
+
+    public void setEditTime(String editTime) {
+        this.editTime = editTime;
+    }
+
     public String getDeptName() {
         return deptName;
     }
@@ -113,4 +146,8 @@ public class PaperVO {
     public void setStatusDesc(String statusDesc) {
         this.statusDesc = statusDesc;
     }
+
+    private String deptName;
+    private String statusDesc;
+
 }

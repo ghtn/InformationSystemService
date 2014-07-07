@@ -16,4 +16,8 @@ public interface PaperDao extends GenericDao<Paper, Integer> {
     Long getCount(Date startDate, Date endDate, int deptId, int status);
 
     List<Subject> getSubjects(int paperId);
+
+    String getPaperName(int paperId);
+
+    List<Paper> listPaper(int deptId, int status);
 }

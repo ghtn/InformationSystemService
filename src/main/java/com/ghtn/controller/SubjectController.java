@@ -2,7 +2,6 @@ package com.ghtn.controller;
 
 import com.ghtn.model.Subject;
 import com.ghtn.service.SubjectManager;
-import com.ghtn.util.ConstantUtil;
 import com.ghtn.util.FileUtil;
 import com.ghtn.vo.SubjectVO;
 import org.springframework.stereotype.Controller;
@@ -34,18 +33,21 @@ public class SubjectController extends BaseController {
 
     @RequestMapping("/listSubjectByPage")
     @ResponseBody
-    public Map<String, Object> listSubjectByPage(int start, int limit, int type) throws Exception {
+    public Map<String, Object> listSubjectByPage(int start, int limit, int type, HttpSession session) throws Exception {
         Map<String, Object> map = new HashMap<>();
-        map.put("total", subjectManager.getCount(type));
-        map.put("items", subjectManager.listSubjectByPage(start, limit, type));
+
+        // TODO : deptId从session中获取
+        map.put("total", subjectManager.getCount(type, -1));
+        map.put("items", subjectManager.listSubjectByPage(start, limit, type, -1));
 
         return map;
     }
 
     @RequestMapping("/add")
     @ResponseBody
-    public Map<String, Object> addSubject(Subject subject, String paramStr) throws Exception {
-        subjectManager.addSubject(subject, paramStr);
+    public Map<String, Object> addSubject(Subject subject, String paramStr, HttpSession session) throws Exception {
+        // TODO : deptId从session中获取
+        subjectManager.addSubject(subject, paramStr, session);
         return operationSuccess();
     }
 
@@ -58,8 +60,8 @@ public class SubjectController extends BaseController {
 
     @RequestMapping("/update")
     @ResponseBody
-    public Map<String, Object> updateSubject(Subject subject, String paramStr) throws Exception {
-        subjectManager.updateSubject(subject, paramStr);
+    public Map<String, Object> updateSubject(Subject subject, String paramStr, HttpSession session) throws Exception {
+        subjectManager.updateSubject(subject, paramStr, session);
         return operationSuccess();
     }
 
@@ -81,14 +83,16 @@ public class SubjectController extends BaseController {
 
     @RequestMapping("/importSubjects")
     @ResponseBody
-    public Map<String, Object> importSubjects(int deptId, HttpSession session) throws Exception {
-        subjectManager.importSubjects(deptId, ConstantUtil.UPLOAD_TEMP_PATH + "/" + session.getAttribute("fileName"));
+    public Map<String, Object> importSubjects(HttpSession session) throws Exception {
+        // TODO : deptId从session中获取
+        subjectManager.importSubjects(session);
         return operationSuccess();
     }
 
     @RequestMapping("/listSubjectByDate")
     @ResponseBody
     public List<SubjectVO> listSubjectByDate(String startDate, String endDate) throws Exception {
-        return subjectManager.listSubjectByDate(startDate, endDate);
+        // TODO : deptId从session中获取
+        return subjectManager.listSubjectByDate(startDate, endDate, 2);
     }
 }

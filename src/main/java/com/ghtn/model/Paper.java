@@ -1,11 +1,10 @@
 package com.ghtn.model;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * Created by lihe on 14-6-20.
+ * Created by lihe on 14-7-3.
  */
 @Entity
 public class Paper {
@@ -15,14 +14,14 @@ public class Paper {
     private Integer passScore;
     private Integer deptId;
     private Integer examTime;
-    private String creator;
+    private int creator;
+    private String creatorName;
     private Date createTime;
     private Integer subNum;
     private Integer status;
-
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
-    }
+    private Integer editor;
+    private String editorName;
+    private Date editTime;
 
     @Id
     @GeneratedValue
@@ -86,13 +85,23 @@ public class Paper {
     }
 
     @Basic
-    @Column(name = "creator", nullable = true, insertable = true, updatable = true, length = 255)
-    public String getCreator() {
+    @Column(name = "creator", nullable = false, insertable = true, updatable = true)
+    public int getCreator() {
         return creator;
     }
 
-    public void setCreator(String creator) {
+    public void setCreator(int creator) {
         this.creator = creator;
+    }
+
+    @Basic
+    @Column(name = "creatorName", nullable = true, insertable = true, updatable = true, length = 255)
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 
     @Basic
@@ -126,6 +135,37 @@ public class Paper {
         this.status = status;
     }
 
+    @Basic
+    @Column(name = "editor", nullable = true, insertable = true, updatable = true)
+    public Integer getEditor() {
+        return editor;
+    }
+
+    public void setEditor(Integer editor) {
+        this.editor = editor;
+    }
+
+    @Basic
+    @Column(name = "editorName", nullable = true, insertable = true, updatable = true, length = 255)
+    public String getEditorName() {
+        return editorName;
+    }
+
+    public void setEditorName(String editorName) {
+        this.editorName = editorName;
+    }
+
+    @Basic
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "editTime", nullable = true, insertable = true, updatable = true)
+    public Date getEditTime() {
+        return editTime;
+    }
+
+    public void setEditTime(Date editTime) {
+        this.editTime = editTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -133,14 +173,19 @@ public class Paper {
 
         Paper paper = (Paper) o;
 
+        if (creator != paper.creator) return false;
         if (id != paper.id) return false;
         if (createTime != null ? !createTime.equals(paper.createTime) : paper.createTime != null) return false;
-        if (creator != null ? !creator.equals(paper.creator) : paper.creator != null) return false;
+        if (creatorName != null ? !creatorName.equals(paper.creatorName) : paper.creatorName != null) return false;
         if (deptId != null ? !deptId.equals(paper.deptId) : paper.deptId != null) return false;
+        if (editTime != null ? !editTime.equals(paper.editTime) : paper.editTime != null) return false;
+        if (editor != null ? !editor.equals(paper.editor) : paper.editor != null) return false;
+        if (editorName != null ? !editorName.equals(paper.editorName) : paper.editorName != null) return false;
         if (examTime != null ? !examTime.equals(paper.examTime) : paper.examTime != null) return false;
         if (fullScore != null ? !fullScore.equals(paper.fullScore) : paper.fullScore != null) return false;
         if (name != null ? !name.equals(paper.name) : paper.name != null) return false;
         if (passScore != null ? !passScore.equals(paper.passScore) : paper.passScore != null) return false;
+        if (status != null ? !status.equals(paper.status) : paper.status != null) return false;
         if (subNum != null ? !subNum.equals(paper.subNum) : paper.subNum != null) return false;
 
         return true;
@@ -154,9 +199,14 @@ public class Paper {
         result = 31 * result + (passScore != null ? passScore.hashCode() : 0);
         result = 31 * result + (deptId != null ? deptId.hashCode() : 0);
         result = 31 * result + (examTime != null ? examTime.hashCode() : 0);
-        result = 31 * result + (creator != null ? creator.hashCode() : 0);
+        result = 31 * result + creator;
+        result = 31 * result + (creatorName != null ? creatorName.hashCode() : 0);
         result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
         result = 31 * result + (subNum != null ? subNum.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (editor != null ? editor.hashCode() : 0);
+        result = 31 * result + (editorName != null ? editorName.hashCode() : 0);
+        result = 31 * result + (editTime != null ? editTime.hashCode() : 0);
         return result;
     }
 }

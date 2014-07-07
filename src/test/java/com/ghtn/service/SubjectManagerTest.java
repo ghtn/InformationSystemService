@@ -26,7 +26,8 @@ public class SubjectManagerTest extends BaseTestCase {
         for (int i = 0; i < 100; i++) {
             Subject subject = new Subject();
             subject.setDescription("题目" + i);
-            subject.setCreator("李鹤");
+            subject.setCreator(0);
+            subject.setCreatorName("李鹤");
             subject.setCreateTime(new Date());
 
             if (i % 2 == 0) {
@@ -41,7 +42,7 @@ public class SubjectManagerTest extends BaseTestCase {
 
     @Test
     public void testGetCount() {
-        System.out.println(subjectManager.getCount(-1));
+        System.out.println(subjectManager.getCount(-1, 2));
     }
 
     @Test
@@ -53,12 +54,12 @@ public class SubjectManagerTest extends BaseTestCase {
 
     @Test
     public void testImport() throws Exception {
-        subjectManager.importSubjects(2, "/Users/lihe/Documents/题库模板.xlsx");
+//        subjectManager.importSubjects(2, "/Users/lihe/Documents/题库模板.xlsx");
     }
 
     @Test
     public void testListSubject() throws Exception {
-        List<SubjectVO> list = subjectManager.listSubjectByDate("2014-06-28", "2014-06-30");
+        List<SubjectVO> list = subjectManager.listSubjectByDate("2014-06-28", "2014-06-30", 2);
         System.out.println(list.size());
     }
 

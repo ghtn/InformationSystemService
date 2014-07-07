@@ -1,7 +1,6 @@
 package com.ghtn.service;
 
 import com.ghtn.BaseTestCase;
-import com.ghtn.model.Paper;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -21,19 +20,19 @@ public class PaperManagerTest extends BaseTestCase {
 
     @Test
     public void testGen() throws ParseException {
-        Paper paper = new Paper();
+       /* Paper paper = new Paper();
         paper.setDeptId(2);
         paper.setExamTime(120);
         paper.setFullScore(100);
         paper.setName("test");
         paper.setPassScore(60);
 
-        paperManager.genPaper(paper, "2014-06-01", "2014-07-01", 1000, 1000);
+        paperManager.genPaper(paper, "2014-06-01", "2014-07-01", 1000, 1000, 2);*/
     }
 
     @Test
     public void testImport() throws Exception {
-        paperManager.importPaper(2, "/Users/lihe/Documents/试卷模板.xls");
+//        paperManager.importPaper(2, "/Users/lihe/Documents/试卷模板.xls");
     }
 
     @Test
