@@ -3,6 +3,9 @@ package com.ghtn.controller;
 import com.ghtn.model.Employee;
 import com.ghtn.model.Exam;
 import com.ghtn.service.ExamManager;
+import com.ghtn.vo.EmpVO;
+import com.ghtn.vo.ExamVO;
+import com.ghtn.vo.SubjectVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -71,5 +74,58 @@ public class ExamController extends BaseController {
     public Map<String, Object> updateExam(int id, String name, int paperId, String place, String examTime, String paramStr, HttpSession session) throws ParseException {
         examManager.updateExam(id, name, paperId, place, examTime, paramStr, session);
         return operationSuccess();
+    }
+
+    @RequestMapping("/listExam")
+    @ResponseBody
+    public Map<String, Object> listExam(HttpSession session) throws ParseException {
+        Map<String, Object> map = new HashMap<>();
+        EmpVO vo = (EmpVO) session.getAttribute("examPerson");
+        if (vo != null) {
+            List<ExamVO> list = examManager.listExam(vo.getDeptId());
+
+            if (list != null && list.size() > 0) {
+                map.put("code", 1);
+                map.put("examList", list);
+            } else {
+                map.put("code", -1);
+            }
+        } else {
+            map.put("code", -1);
+        }
+
+        return map;
+    }
+
+    @RequestMapping("/login")
+    @ResponseBody
+    public Map<String, Object> login(String idCard, HttpSession session) throws ParseException {
+        Map<String, Object> map = new HashMap<>();
+        EmpVO vo = examManager.login(idCard);
+        if (vo != null) {
+            map.put("code", 1);
+            map.put("name", vo.getName());
+            map.put("idCard", vo.getIdCard());
+            map.put("deptName", vo.getDeptName());
+            session.setAttribute("examPerson", vo);
+        } else {
+            map.put("code", -1);
+        }
+
+        return map;
+    }
+
+    @RequestMapping("/loadPaper")
+    @ResponseBody
+    public Map<String, Object> loadPaper(int examId) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        List<SubjectVO> list = examManager.loadPaper(examId);
+        if (list != null && list.size() > 0) {
+            map.put("code", 1);
+            map.put("subjectList", list);
+        } else {
+            map.put("code", -1);
+        }
+        return map;
     }
 }

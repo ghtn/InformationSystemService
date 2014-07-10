@@ -36,4 +36,7 @@ public interface PaperManager extends GenericManager<Paper, Integer> {
     void updatePaper(Paper paper);
 
     List<PaperVO> listPaper(int deptId, int status);
+
+    List<SubjectVO> loadPaper(int paperId) throws Exception;
+
 }

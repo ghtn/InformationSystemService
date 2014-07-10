@@ -27,4 +27,6 @@ public interface SubjectManager extends GenericManager<Subject, Integer> {
 
     List<SubjectVO> transformToVO(List<Subject> list) throws Exception;
 
+    SubjectVO transformToVO(Subject subject) throws Exception;
+
 }

@@ -8,9 +8,12 @@ import com.ghtn.model.Employee;
 import com.ghtn.model.Exam;
 import com.ghtn.model.ExamEmp;
 import com.ghtn.service.ExamManager;
+import com.ghtn.service.PaperManager;
 import com.ghtn.util.DateUtil;
 import com.ghtn.util.StringUtil;
+import com.ghtn.vo.EmpVO;
 import com.ghtn.vo.ExamVO;
+import com.ghtn.vo.SubjectVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by lihe on 14-7-3.
@@ -54,6 +59,13 @@ public class ExamManagerImpl extends GenericManagerImpl<Exam, Integer> implement
     @Resource
     public void setExamEmpDao(ExamEmpDao examEmpDao) {
         this.examEmpDao = examEmpDao;
+    }
+
+    private PaperManager paperManager;
+
+    @Resource
+    public void setPaperManager(PaperManager paperManager) {
+        this.paperManager = paperManager;
     }
 
     @Override
@@ -162,6 +174,50 @@ public class ExamManagerImpl extends GenericManagerImpl<Exam, Integer> implement
 
             examEmpDao.save(examEmp);
         }
+    }
+
+    @Override
+    public EmpVO login(String idCard) {
+        if (StringUtil.isNullStr(idCard)) {
+            log.error("身份证号为空!idCard = " + idCard);
+            return null;
+        }
+        // 身份证号正则表达式
+        String idCardReg = "^(\\d{15}$|^\\d{18}$|^\\d{17}(\\d|X|x))$";
+        Pattern pattern = Pattern.compile(idCardReg);
+        Matcher matcher = pattern.matcher(idCard);
+        if (!matcher.matches()) {
+            log.error("身份证号格式不正确!idCard = " + idCard);
+            return null;
+        }
+
+        Employee employee = examDao.login(idCard);
+        if (employee == null) {
+            log.error("没有获取到相应的员工信息!idCard = " + idCard);
+            return null;
+        }
+
+        EmpVO vo = new EmpVO();
+        vo.setName(employee.getName());
+        vo.setIdCard(employee.getCard());
+        vo.setDeptId(employee.getDeptId());
+        vo.setDeptName(employee.getDeptName());
+
+        return vo;
+    }
+
+    @Override
+    public List<ExamVO> listExam(int deptId) {
+        if (deptId <= 0) {
+            log.error("部门id错误! deptId = " + deptId);
+            return null;
+        }
+        return transformToVO(examDao.listExam(deptId));
+    }
+
+    @Override
+    public List<SubjectVO> loadPaper(int examId) throws Exception {
+        return paperManager.loadPaper(get(examId).getPaperId());
     }
 
     private List<ExamVO> transformToVO(List<Exam> list) {

@@ -200,8 +200,8 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
 
             for (String[] strArray : subjectInfoList) {
                 String type = strArray[0].trim();
-                if (!type.equals("选择题") && !type.equals("判断题")) {
-                    log.error("题目类型错误: 必须为\"选择题\"或\"判断题\", 将跳过此次循环, 继续导入下一个题目!");
+                if (!type.equals("单选题") && !type.equals("多选题") && !type.equals("判断题")) {
+                    log.error("题目类型错误: 必须为\"单选题\"或\"多选题\"或\"判断题\", 将跳过此次循环, 继续导入下一个题目!");
                     continue;
                 }
 
@@ -230,8 +230,13 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
                 subject.setCreatorName("李鹤");
                 subject.setCreateTime(new Date());
 
-                if (type.equals("选择题")) {
-                    subject.setType(0);
+                if (type.equals("单选题") || type.equals("多选题")) {
+                    if (type.equals("单选题")) {
+                        subject.setType(0);
+                    } else {
+                        subject.setType(2);
+                    }
+
                     subject.setCorrect(null);
                     subject = subjectDao.save(subject);
 
@@ -240,6 +245,9 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
                         if (!StringUtil.isNullStr(answer)) {
                             SubjectAnswer subjectAnswer = new SubjectAnswer();
                             subjectAnswer.setSubjectId(subject.getId());
+                            subjectAnswer.setMark(answer.split("#")[0]);
+
+                            answer = answer.split("#")[1];
 
                             if (answer.contains("$")) {
                                 // 如果是正确答案
@@ -410,6 +418,28 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
     @Override
     public List<PaperVO> listPaper(int deptId, int status) {
         return transformToVO(paperDao.listPaper(deptId, status));
+    }
+
+    @Override
+    public List<SubjectVO> loadPaper(int paperId) throws Exception {
+        List<SubjectVO> returnList = new ArrayList<>();
+
+        List<Subject> subjectList = paperDao.getSubjects(paperId);
+
+        if (subjectList != null && subjectList.size() > 0) {
+            for (Subject subject : subjectList) {
+                SubjectVO vo = subjectManager.transformToVO(subject);
+                if (subject.getType() == 0 || subject.getType() == 2) {
+                    // 选择题
+                    List<SubjectAnswer> answerList = subjectAnswerDao.getAnswers(subject);
+                    vo.setAnswers(answerList);
+                }
+
+                returnList.add(vo);
+            }
+        }
+
+        return returnList;
     }
 
     /**

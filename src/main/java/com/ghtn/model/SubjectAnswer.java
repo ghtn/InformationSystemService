@@ -12,6 +12,7 @@ public class SubjectAnswer {
     private Integer subjectId;
     private String description;
     private Integer correct;
+    private String mark;
 
     @Id
     @GeneratedValue
@@ -76,5 +77,15 @@ public class SubjectAnswer {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (correct != null ? correct.hashCode() : 0);
         return result;
+    }
+
+    @Basic
+    @Column(name = "mark", nullable = true, insertable = true, updatable = true, length = 2)
+    public String getMark() {
+        return mark;
+    }
+
+    public void setMark(String mark) {
+        this.mark = mark;
     }
 }

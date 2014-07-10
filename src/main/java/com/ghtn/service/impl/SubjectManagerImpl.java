@@ -88,13 +88,13 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
         subject.setDeptId(2);
 
         // 如果是选择题, 把"是否正确"置为null, 此字段只用于判断题
-        if (subject.getType() == 0) {
+        if (subject.getType() == 0 || subject.getType() == 2) {
             subject.setCorrect(null);
         }
         subject = subjectDao.save(subject);
 
         // 如果是选择题, 并且答案信息不为空
-        if (subject.getType() == 0 && !StringUtil.isNullStr(paramStr)) {
+        if ((subject.getType() == 0 || subject.getType() == 2) && !StringUtil.isNullStr(paramStr)) {
             String[] answers = paramStr.split("@");
             for (int i = 0; i < answers.length; i++) {
                 String answer = answers[i];
@@ -102,10 +102,11 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
 
                 SubjectAnswer subjectAnswer = new SubjectAnswer();
                 subjectAnswer.setSubjectId(subject.getId());
-                subjectAnswer.setDescription(items[0]);
-                if (items[1].equals("true")) {
+                subjectAnswer.setMark(items[0].toUpperCase());
+                subjectAnswer.setDescription(items[1]);
+                if (items[2].equals("true")) {
                     subjectAnswer.setCorrect(1);
-                } else if (items[1].equals("false")) {
+                } else if (items[2].equals("false")) {
                     subjectAnswer.setCorrect(0);
                 } else {
                     throw new Exception("答案类型错误!答案类型只能是\"正确答案\"或\"非正确答案\"!");
@@ -137,12 +138,14 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
         subject.setEditTime(new Date());
 
         // 如果是选择题, 把"是否正确"置为null, 此字段只用于判断题
-        if (subject.getType() == 0) {
+        if (subject.getType() == 0 || subject.getType() == 2) {
             subject.setCorrect(null);
         }
         subjectDao.save(subject);
 
-        if (subject.getType() == 0 && !StringUtil.isNullStr(paramStr)) {
+        subjectAnswerDao.removeSubjectAnswer(subject);
+
+        if ((subject.getType() == 0 || subject.getType() == 2) && !StringUtil.isNullStr(paramStr)) {
             String[] answers = paramStr.split("@");
             for (int i = 0; i < answers.length; i++) {
                 String answer = answers[i];
@@ -156,10 +159,11 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
                 }
 
                 subjectAnswer.setSubjectId(subject.getId());
-                subjectAnswer.setDescription(items[1]);
-                if (items[2].equals("true")) {
+                subjectAnswer.setMark(items[1].toUpperCase());
+                subjectAnswer.setDescription(items[2]);
+                if (items[3].equals("true")) {
                     subjectAnswer.setCorrect(1);
-                } else if (items[2].equals("false")) {
+                } else if (items[3].equals("false")) {
                     subjectAnswer.setCorrect(0);
                 } else {
                     throw new Exception("答案类型错误!答案类型只能是\"正确答案\"或\"非正确答案\"!");
@@ -169,10 +173,6 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
             }
         }
 
-        // 是判断题的情况下, 删除subject_answer表中对应的选择题答案
-        if (subject.getType() == 1) {
-            subjectAnswerDao.removeSubjectAnswer(subject);
-        }
     }
 
     @Override
@@ -182,8 +182,8 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
         if (list != null && list.size() > 0) {
             for (String[] strArray : list) {
                 String type = strArray[0].trim();
-                if (!type.equals("选择题") && !type.equals("判断题")) {
-                    log.error("题目类型错误: 必须为\"选择题\"或\"判断题\", 将跳过此次循环, 继续导入下一个题目!");
+                if (!type.equals("单选题") && !type.equals("多选题") && !type.equals("判断题")) {
+                    log.error("题目类型错误: 必须为\"单选题\"或\"多选题\"或\"判断题\", 将跳过此次循环, 继续导入下一个题目!");
                     continue;
                 }
 
@@ -212,8 +212,13 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
                 subject.setCreatorName("李鹤");
                 subject.setCreateTime(new Date());
 
-                if (type.equals("选择题")) {
-                    subject.setType(0);
+                if (type.equals("单选题") || type.equals("多选题")) {
+                    if (type.equals("单选题")) {
+                        subject.setType(0);
+                    } else {
+                        subject.setType(2);
+                    }
+
                     subject.setCorrect(null);
                     subject = subjectDao.save(subject);
 
@@ -222,6 +227,8 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
                         if (!StringUtil.isNullStr(answer)) {
                             SubjectAnswer subjectAnswer = new SubjectAnswer();
                             subjectAnswer.setSubjectId(subject.getId());
+                            subjectAnswer.setMark(answer.split("#")[0].toUpperCase());
+                            answer = answer.split("#")[1];
 
                             if (answer.contains("$")) {
                                 // 如果是正确答案
@@ -278,41 +285,50 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
 
         if (list != null && list.size() > 0) {
             for (Subject subject : list) {
-                SubjectVO vo = new SubjectVO();
-                vo.setId(subject.getId());
-                vo.setDeptId(subject.getDeptId());
-                vo.setDeptName(departmentDao.getDeptName(subject.getDeptId()));
-                vo.setDescription(subject.getDescription());
-                vo.setType(subject.getType());
-                if (subject.getType() == 0) {
-                    vo.setTypeDesc("选择题");
-                } else if (subject.getType() == 1) {
-                    vo.setTypeDesc("判断题");
-                } else {
-                    throw new Exception("题目类型错误!!!");
-                }
-                vo.setCreator(subject.getCreator());
-                vo.setCreatorName(subject.getCreatorName());
-                vo.setMark(subject.getMark());
-                vo.setCreateTime(DateUtil.dateToString(subject.getCreateTime()));
-                vo.setCorrect(subject.getCorrect());
-
-                if (subject.getEditor() != null) {
-                    vo.setEditor(subject.getEditor());
-                }
-
-                if (!StringUtil.isNullStr(subject.getEditorName())) {
-                    vo.setEditorName(subject.getEditorName());
-                }
-
-                if (subject.getEditTime() != null) {
-                    vo.setEditTime(DateUtil.dateToString(subject.getEditTime()));
-                }
-
-                returnList.add(vo);
+                returnList.add(transformToVO(subject));
             }
         }
 
         return returnList;
     }
+
+    @Override
+    public SubjectVO transformToVO(Subject subject) throws Exception {
+        SubjectVO vo = new SubjectVO();
+        vo.setId(subject.getId());
+        vo.setDeptId(subject.getDeptId());
+        vo.setDeptName(departmentDao.getDeptName(subject.getDeptId()));
+        vo.setDescription(subject.getDescription());
+        vo.setType(subject.getType());
+        if (subject.getType() == 0) {
+            vo.setTypeDesc("单选题");
+        } else if (subject.getType() == 1) {
+            vo.setTypeDesc("判断题");
+        } else if (subject.getType() == 2) {
+            vo.setTypeDesc("多选题");
+        } else {
+            throw new Exception("题目类型错误!!!");
+        }
+        vo.setCreator(subject.getCreator());
+        vo.setCreatorName(subject.getCreatorName());
+        vo.setMark(subject.getMark());
+        vo.setCreateTime(DateUtil.dateToString(subject.getCreateTime()));
+        vo.setCorrect(subject.getCorrect());
+
+        if (subject.getEditor() != null) {
+            vo.setEditor(subject.getEditor());
+        }
+
+        if (!StringUtil.isNullStr(subject.getEditorName())) {
+            vo.setEditorName(subject.getEditorName());
+        }
+
+        if (subject.getEditTime() != null) {
+            vo.setEditTime(DateUtil.dateToString(subject.getEditTime()));
+        }
+
+        return vo;
+    }
+
+
 }

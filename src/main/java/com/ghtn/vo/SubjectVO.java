@@ -1,5 +1,9 @@
 package com.ghtn.vo;
 
+import com.ghtn.model.SubjectAnswer;
+
+import java.util.List;
+
 /**
  * Created by lihe on 14-6-23.
  */
@@ -19,6 +23,8 @@ public class SubjectVO {
     private int editor;
     private String editorName;
     private String editTime;
+
+    private List<SubjectAnswer> answers;
 
     public int getId() {
         return id;
@@ -130,5 +136,13 @@ public class SubjectVO {
 
     public void setEditTime(String editTime) {
         this.editTime = editTime;
+    }
+
+    public List<SubjectAnswer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<SubjectAnswer> answers) {
+        this.answers = answers;
     }
 }

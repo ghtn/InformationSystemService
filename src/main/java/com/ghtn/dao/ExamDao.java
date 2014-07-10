@@ -18,4 +18,8 @@ public interface ExamDao extends GenericDao<Exam, Integer> {
     List<Employee> listEmp(int deptId, String idCard, String name);
 
     List<Object[]> getEmps(int examId);
+
+    Employee login(String idCard);
+
+    List<Exam> listExam(int deptId);
 }

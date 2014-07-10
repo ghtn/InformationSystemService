@@ -2,7 +2,9 @@ package com.ghtn.service;
 
 import com.ghtn.model.Employee;
 import com.ghtn.model.Exam;
+import com.ghtn.vo.EmpVO;
 import com.ghtn.vo.ExamVO;
+import com.ghtn.vo.SubjectVO;
 
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
@@ -26,4 +28,9 @@ public interface ExamManager extends GenericManager<Exam, Integer> {
 
     void updateExam(int id, String name, int paperId, String place, String examTime, String paramStr, HttpSession session) throws ParseException;
 
+    EmpVO login(String idCard);
+
+    List<ExamVO> listExam(int deptId);
+
+    List<SubjectVO> loadPaper(int examId) throws Exception;
 }

@@ -75,5 +75,15 @@ public class ExamDaoHibernate extends GenericDaoHibernate<Exam, Integer> impleme
         return getSession().createQuery(hql).setInteger("examId", examId).list();
     }
 
+    @Override
+    public Employee login(String idCard) {
+        return (Employee) getSession().createCriteria(Employee.class).add(Restrictions.eq("card", idCard)).uniqueResult();
+    }
+
+    @Override
+    public List<Exam> listExam(int deptId) {
+        return getSession().createCriteria(Exam.class).add(Restrictions.eq("deptId", deptId)).list();
+    }
+
 
 }
