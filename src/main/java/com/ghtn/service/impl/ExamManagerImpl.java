@@ -162,7 +162,7 @@ public class ExamManagerImpl extends GenericManagerImpl<Exam, Integer> implement
 
     @Override
     public List<Employee> listEmp(int deptId, String idCard, String name) {
-        return examDao.listEmp(deptId, idCard, name);
+        return examDao.listEmp(deptId, idCard.toUpperCase(), name);
     }
 
     @Override
@@ -212,6 +212,7 @@ public class ExamManagerImpl extends GenericManagerImpl<Exam, Integer> implement
             log.error("身份证号为空!idCard = " + idCard);
             return null;
         }
+
         // 身份证号正则表达式
         String idCardReg = "^(\\d{15}$|^\\d{18}$|^\\d{17}(\\d|X|x))$";
         Pattern pattern = Pattern.compile(idCardReg);
@@ -220,6 +221,8 @@ public class ExamManagerImpl extends GenericManagerImpl<Exam, Integer> implement
             log.error("身份证号格式不正确!idCard = " + idCard);
             return null;
         }
+
+        idCard = idCard.toUpperCase();
 
         Employee employee = examDao.login(idCard);
         if (employee == null) {
@@ -234,6 +237,19 @@ public class ExamManagerImpl extends GenericManagerImpl<Exam, Integer> implement
         vo.setDeptName(employee.getDeptName());
 
         return vo;
+    }
+
+    @Override
+    public boolean checkExamEmp(int examId, String idCard) {
+        List<Employee> empList = getEmps(examId);
+        if (empList != null && empList.size() > 0) {
+            for (Employee employee : empList) {
+                if (employee.getCard().trim().toUpperCase().equals(idCard.trim().toUpperCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -265,7 +281,7 @@ public class ExamManagerImpl extends GenericManagerImpl<Exam, Integer> implement
         List<Subject> errorList = new ArrayList<>(); // 错题list
         String[] items = paramStr.split("@");
         int examId = Integer.parseInt(items[0].split("#")[0]);
-        String idCard = items[0].split("#")[1];
+        String idCard = items[0].split("#")[1].toUpperCase();
 
         if (scoreDao.getScore(examId, idCard) != null) {
             String msg = "已经存在该人的考试记录! examId = " + examId + ", idCard = " + idCard;

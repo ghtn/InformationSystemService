@@ -32,6 +32,8 @@ public interface ExamManager extends GenericManager<Exam, Integer> {
 
     EmpVO login(String idCard);
 
+    boolean checkExamEmp(int examId, String idCard);
+
     List<ExamVO> listExam(int deptId);
 
     List<SubjectVO> loadPaper(int examId) throws Exception;

@@ -117,6 +117,18 @@ public class ExamController extends BaseController {
         return map;
     }
 
+    @RequestMapping("/checkExamEmp")
+    @ResponseBody
+    public Map<String, Object> checkExamEmp(int examId, String idCard) throws ParseException {
+        Map<String, Object> map = new HashMap<>();
+        if (examManager.checkExamEmp(examId, idCard)) {
+            map.put("code", 1);
+        } else {
+            map.put("code", -1);
+        }
+        return map;
+    }
+
     @RequestMapping("/loadPaper")
     @ResponseBody
     public Map<String, Object> loadPaper(int examId) throws Exception {

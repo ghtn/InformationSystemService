@@ -22,4 +22,5 @@ public interface ExamDao extends GenericDao<Exam, Integer> {
     Employee login(String idCard);
 
     List<Exam> listExam(int deptId);
+
 }
