@@ -3,6 +3,7 @@ package com.ghtn.dao.hibernate;
 import com.ghtn.dao.SubjectAnswerDao;
 import com.ghtn.model.Subject;
 import com.ghtn.model.SubjectAnswer;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,5 +29,12 @@ public class SubjectAnswerDaoHibernate extends GenericDaoHibernate<SubjectAnswer
     public List<SubjectAnswer> getAnswers(Subject subject) {
         String hql = "from SubjectAnswer sa where sa.subjectId = " + subject.getId();
         return queryHql(hql);
+    }
+
+    @Override
+    public List<SubjectAnswer> getCorrectAnswer(Subject subject) {
+        return getSession().createCriteria(SubjectAnswer.class)
+                .add(Restrictions.eq("subjectId", subject.getId()))
+                .add(Restrictions.eq("correct", 1)).list();
     }
 }

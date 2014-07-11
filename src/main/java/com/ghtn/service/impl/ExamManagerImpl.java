@@ -1,12 +1,9 @@
 package com.ghtn.service.impl;
 
-import com.ghtn.dao.DepartmentDao;
-import com.ghtn.dao.ExamDao;
-import com.ghtn.dao.ExamEmpDao;
-import com.ghtn.dao.PaperDao;
-import com.ghtn.model.Employee;
-import com.ghtn.model.Exam;
-import com.ghtn.model.ExamEmp;
+import com.ghtn.Exception.ExistScoreException;
+import com.ghtn.Exception.NullParamStrException;
+import com.ghtn.dao.*;
+import com.ghtn.model.*;
 import com.ghtn.service.ExamManager;
 import com.ghtn.service.PaperManager;
 import com.ghtn.util.DateUtil;
@@ -20,9 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,6 +61,41 @@ public class ExamManagerImpl extends GenericManagerImpl<Exam, Integer> implement
     @Resource
     public void setPaperManager(PaperManager paperManager) {
         this.paperManager = paperManager;
+    }
+
+    private SubjectDao subjectDao;
+
+    @Resource
+    public void setSubjectDao(SubjectDao subjectDao) {
+        this.subjectDao = subjectDao;
+    }
+
+    private SubjectAnswerDao subjectAnswerDao;
+
+    @Resource
+    public void setSubjectAnswerDao(SubjectAnswerDao subjectAnswerDao) {
+        this.subjectAnswerDao = subjectAnswerDao;
+    }
+
+    private EmployeeDao employeeDao;
+
+    @Resource
+    public void setEmployeeDao(EmployeeDao employeeDao) {
+        this.employeeDao = employeeDao;
+    }
+
+    private ScoreDao scoreDao;
+
+    @Resource
+    public void setScoreDao(ScoreDao scoreDao) {
+        this.scoreDao = scoreDao;
+    }
+
+    private ErrorSubjectDao errorSubjectDao;
+
+    @Resource
+    public void setErrorSubjectDao(ErrorSubjectDao errorSubjectDao) {
+        this.errorSubjectDao = errorSubjectDao;
     }
 
     @Override
@@ -218,6 +248,158 @@ public class ExamManagerImpl extends GenericManagerImpl<Exam, Integer> implement
     @Override
     public List<SubjectVO> loadPaper(int examId) throws Exception {
         return paperManager.loadPaper(get(examId).getPaperId());
+    }
+
+    @Override
+    public Map<String, Object> finishExam(String paramStr) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+
+        if (StringUtil.isNullStr(paramStr)) {
+            String msg = "答题信息为空! paramStr = " + paramStr;
+            log.error(msg);
+            map.put("msg", msg);
+            throw new NullParamStrException();
+        }
+
+        int examScore = 0; // 考试分数
+        List<Subject> errorList = new ArrayList<>(); // 错题list
+        String[] items = paramStr.split("@");
+        int examId = Integer.parseInt(items[0].split("#")[0]);
+        String idCard = items[0].split("#")[1];
+
+        if (scoreDao.getScore(examId, idCard) != null) {
+            String msg = "已经存在该人的考试记录! examId = " + examId + ", idCard = " + idCard;
+            log.error(msg);
+            map.put("msg", msg);
+            throw new ExistScoreException();
+        }
+
+        // 评判试题
+        for (int i = 0; i < items.length; i++) {
+            String[] args = items[i].split("#");
+            int subjectId = Integer.parseInt(args[2]);
+            if (args.length < 4 || StringUtil.isNullStr(args[3])) {
+                log.warn("这道题没有作答!跳过此次循环, 评判下一道试题! subjectId = " + subjectId);
+                continue;
+            }
+
+            Subject subject = subjectDao.get(subjectId);
+            if (subject.getType() == 0) {
+                // 单选题
+                List<SubjectAnswer> correctAnswers = subjectAnswerDao.getCorrectAnswer(subject);
+                if (correctAnswers == null || correctAnswers.size() == 0) {
+                    log.error("这道题没有正确答案!跳过此次循环, 评判下一道试题! subjectId = " + subject.getId());
+                    continue;
+                }
+                if (correctAnswers.size() > 1) {
+                    log.error("单选题的正确答案不止一个!跳过此次循环, 评判下一道试题! subjectId = " + subject.getId());
+                    continue;
+                }
+
+                if (Integer.parseInt(args[3]) == correctAnswers.get(0).getId()) {
+                    // 如果答对
+                    examScore += subject.getMark();
+                } else {
+                    // 如果答错
+                    errorList.add(subject);
+                }
+            }
+
+            if (subject.getType() == 1) {
+                // 判断题
+                if (subject.getCorrect() == null) {
+                    log.error("判断题的答案为空!跳过此次循环, 评判下一道试题! subjectId = " + subject.getId());
+                    continue;
+                }
+                int answer = args[3].equals("true") ? 1 : 0;
+                if (answer == subject.getCorrect()) {
+                    // 答对
+                    examScore += subject.getMark();
+                } else {
+                    // 答错
+                    errorList.add(subject);
+                }
+            }
+
+            if (subject.getType() == 2) {
+                // 多选题
+                List<SubjectAnswer> correctAnswers = subjectAnswerDao.getCorrectAnswer(subject);
+                if (correctAnswers == null || correctAnswers.size() == 0) {
+                    log.error("这道题没有正确答案!跳过此次循环, 评判下一道试题! subjectId = " + subject.getId());
+                    continue;
+                }
+                if (correctAnswers.size() <= 1) {
+                    log.error("多选题的正确答案不能只有一个!跳过此次循环, 评判下一道试题! subjectId = " + subject.getId());
+                    continue;
+                }
+
+                List<Integer> answerList = new ArrayList<>();
+                for (int j = 3; j < args.length; j++) {
+                    answerList.add(Integer.parseInt(args[j]));
+                }
+
+                boolean correct = true;
+
+                for (SubjectAnswer subjectAnswer : correctAnswers) {
+                    if (answerList.contains(subjectAnswer.getId())) {
+                        answerList.remove(new Integer(subjectAnswer.getId()));
+
+                    } else {
+                        correct = false;
+                        break;
+                    }
+                }
+                if (correct && answerList.size() == 0) {
+                    // 答对
+                    examScore += subject.getMark();
+                } else {
+                    // 答错
+                    errorList.add(subject);
+                }
+            }
+        }
+
+        // 把考试结果插入成绩表
+        Employee employee = employeeDao.getEmployeeByIdCard(idCard);
+        Exam exam = examDao.get(examId);
+        Paper paper = paperDao.get(exam.getPaperId());
+        Score score = new Score();
+        score.setIdCard(idCard);
+        score.setName(employee.getName());
+        score.setDeptId(employee.getDeptId());
+        score.setDeptName(employee.getDeptName());
+        score.setEmpNumber(employee.getEmpNumber());
+        score.setExamId(examId);
+        score.setExamName(exam.getName());
+        score.setFullScore(paper.getFullScore());
+        score.setPassScore(paper.getPassScore());
+        score.setExamScore(examScore);
+        if (examScore >= paper.getPassScore()) {
+            score.setPass(1);
+        } else {
+            score.setPass(0);
+        }
+        score.setErrorCount(errorList.size());
+        scoreDao.save(score);
+
+
+        // 把错误的题目插入错题表
+        if (errorList.size() > 0) {
+            for (Subject subject : errorList) {
+                ErrorSubject errorSubject = new ErrorSubject();
+                errorSubject.setExamId(examId);
+                errorSubject.setIdCard(idCard);
+                errorSubject.setEmpNumber(employee.getEmpNumber());
+                errorSubject.setSubjectId(subject.getId());
+
+                errorSubjectDao.save(errorSubject);
+            }
+        }
+
+        map.put("examScore", examScore);
+        map.put("errorList", errorList);
+        map.put("errorCount", errorList.size());
+        return map;
     }
 
     private List<ExamVO> transformToVO(List<Exam> list) {

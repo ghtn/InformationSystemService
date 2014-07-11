@@ -14,4 +14,5 @@ public interface SubjectAnswerDao extends GenericDao<SubjectAnswer, Integer> {
 
     List<SubjectAnswer> getAnswers(Subject subject);
 
+    List<SubjectAnswer> getCorrectAnswer(Subject subject);
 }

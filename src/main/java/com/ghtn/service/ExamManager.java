@@ -1,5 +1,6 @@
 package com.ghtn.service;
 
+import com.ghtn.Exception.NullParamStrException;
 import com.ghtn.model.Employee;
 import com.ghtn.model.Exam;
 import com.ghtn.vo.EmpVO;
@@ -9,6 +10,7 @@ import com.ghtn.vo.SubjectVO;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lihe on 14-7-3.
@@ -33,4 +35,6 @@ public interface ExamManager extends GenericManager<Exam, Integer> {
     List<ExamVO> listExam(int deptId);
 
     List<SubjectVO> loadPaper(int examId) throws Exception;
+
+    Map<String, Object> finishExam(String paramStr) throws Exception, NullParamStrException;
 }

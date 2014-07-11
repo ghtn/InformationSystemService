@@ -44,6 +44,7 @@ public class StringUtilTest {
         }*/
 
         List<String> list = new ArrayList<>();
+        System.out.println(list.size());
         for (int i = 0; i < 10; i++) {
             list.add(i + "");
         }

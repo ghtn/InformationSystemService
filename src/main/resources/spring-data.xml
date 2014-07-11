@@ -80,6 +80,7 @@
             <tx:method name="gen*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="publish*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="revoke*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="finish*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="*" read-only="true"/>
         </tx:attributes>
     </tx:advice>

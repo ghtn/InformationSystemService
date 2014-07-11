@@ -1,5 +1,7 @@
 package com.ghtn.controller;
 
+import com.ghtn.Exception.ExistScoreException;
+import com.ghtn.Exception.NullParamStrException;
 import com.ghtn.model.Employee;
 import com.ghtn.model.Exam;
 import com.ghtn.service.ExamManager;
@@ -126,6 +128,30 @@ public class ExamController extends BaseController {
         } else {
             map.put("code", -1);
         }
+        return map;
+    }
+
+    @RequestMapping("/finishExam")
+    @ResponseBody
+    public Map<String, Object> finishExam(String paramStr) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            map = examManager.finishExam(paramStr);
+            map.put("code", 1);
+        } catch (NullParamStrException e) {
+            e.printStackTrace();
+            map.put("code", -1);
+            map.put("msg", "答题信息为空!");
+        } catch (ExistScoreException e) {
+            e.printStackTrace();
+            map.put("code", -1);
+            map.put("msg", "已经存在该人的考试记录!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", -1);
+            map.put("msg", "执行错误!");
+        }
+
         return map;
     }
 }
