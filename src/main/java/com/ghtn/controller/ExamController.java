@@ -166,4 +166,11 @@ public class ExamController extends BaseController {
 
         return map;
     }
+
+    @RequestMapping("/getExamCombo")
+    @ResponseBody
+    public List<ExamVO> getExamCombo(HttpSession session) throws ParseException {
+        // TODO : 从session中取得deptId
+        return examManager.listExam(2);
+    }
 }

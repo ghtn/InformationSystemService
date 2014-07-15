@@ -4,9 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.POIXMLDocument;
 import org.apache.poi.POIXMLTextExtractor;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.Paragraph;
 import org.apache.poi.hwpf.usermodel.Range;
@@ -636,6 +634,35 @@ public class FileUtil {
         } else {
             throw new Exception("上传的文件为空!");
         }
+    }
+
+    public static String exportExcel(List<String[]> dataList) throws IOException {
+        String strExcelFile = Calendar.getInstance().getTimeInMillis() + ".xls";
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        for (int i = 0; i < dataList.size(); i++) {
+            String[] data = dataList.get(i);
+            HSSFRow row = sheet.createRow(i);
+            for (int j = 0; j < data.length; j++) {
+                HSSFCell cell = row.createCell(j);
+                cell.setCellValue(data[j]);
+            }
+        }
+
+        // 如果目录不存在, 则创建临时目录
+        if (!new File(ConstantUtil.UPLOAD_TEMP_PATH).exists()) {
+            new File(ConstantUtil.UPLOAD_TEMP_PATH).mkdirs();
+        }
+
+        File file = new File(ConstantUtil.UPLOAD_TEMP_PATH + "/"
+                + strExcelFile);
+
+        OutputStream out = new FileOutputStream(file);
+        wb.write(out);
+        out.flush();
+        out.close();
+
+        return strExcelFile;
     }
 }
 

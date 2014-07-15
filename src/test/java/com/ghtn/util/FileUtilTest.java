@@ -11,17 +11,16 @@ public class FileUtilTest {
 
     @Test
     public void testExcelReader() throws Exception {
-        List<String[]> list = FileUtil.ExcelReaderForList("/Users/lihe/Documents/test.xlsx", "2007", 1);
+        List<String[]> list = FileUtil.ExcelReaderForList("/Users/lihe/Documents/题库模板.xlsx", "2007", 1);
         System.out.println(list.size());
         System.out.println(list.get(0)[1]);
-        System.out.println(FileUtil.ExcelReader("/Users/lihe/Documents/test.xlsx"));
+//        System.out.println(FileUtil.ExcelReader("/Users/lihe/Documents/test.xlsx"));
+    }
 
-        String s = "12$34";
-        String s2 = "1234";
-        System.out.println(s.contains("$"));
-        System.out.println(s2.contains("$"));
-
-        Integer.parseInt("s");
+    @Test
+    public void testExportExcel() throws Exception {
+        List<String[]> list = FileUtil.ExcelReaderForList("/Users/lihe/Documents/题库模板.xlsx", "2007", 1);
+        FileUtil.exportExcel(list);
     }
 
 }
