@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,29 +55,33 @@ public class SubjectManagerImpl extends GenericManagerImpl<Subject, Integer> imp
     }
 
     @Override
-    public List<SubjectVO> listSubjectByPage(int start, int limit, int type, int deptId) throws Exception {
-        List<Subject> list;
-
-        if (type == -1) {
-            // 返回所有类型的题目
-            list = subjectDao.listSubjectByPage(start, limit, deptId);
-        } else {
-            // 返回指定类型的题目
-            list = subjectDao.listSubjectByPage(start, limit, type, deptId);
+    public List<SubjectVO> listSubjectByPage(int start, int limit, String startDate, String endDate, int type, int mark, int deptId) throws Exception {
+        if (!StringUtil.isNullStr(startDate)) {
+            startDate += " 00:00:00";
         }
-
+        if (!StringUtil.isNullStr(endDate)) {
+            endDate += " 23:59:59";
+        }
+        List<Subject> list = subjectDao.listSubjectByPage(start, limit, DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate), type, mark, deptId);
         return transformToVO(list);
     }
 
     @Override
-    public Long getCount(int type, int deptId) {
-        if (type == -1) {
+    public Long getCount(String startDate, String endDate, int type, int mark, int deptId) throws ParseException {
+        /*if (type == -1) {
             // 返回题目总量
             return subjectDao.getCount(deptId);
         } else {
             // 返回指定类型的题目总量
             return subjectDao.getCount(type, deptId);
+        }*/
+        if (!StringUtil.isNullStr(startDate)) {
+            startDate += " 00:00:00";
         }
+        if (!StringUtil.isNullStr(endDate)) {
+            endDate += " 23:59:59";
+        }
+        return subjectDao.getCount(DateUtil.stringToDate(startDate), DateUtil.stringToDate(endDate), type, mark, deptId);
     }
 
     @Override

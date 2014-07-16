@@ -33,12 +33,12 @@ public class SubjectController extends BaseController {
 
     @RequestMapping("/listSubjectByPage")
     @ResponseBody
-    public Map<String, Object> listSubjectByPage(int start, int limit, int type, HttpSession session) throws Exception {
+    public Map<String, Object> listSubjectByPage(int start, int limit, String startDate, String endDate, int type, int mark, HttpSession session) throws Exception {
         Map<String, Object> map = new HashMap<>();
 
         // TODO : deptId从session中获取
-        map.put("total", subjectManager.getCount(type, -1));
-        map.put("items", subjectManager.listSubjectByPage(start, limit, type, -1));
+        map.put("total", subjectManager.getCount(startDate, endDate, type, mark, 2));
+        map.put("items", subjectManager.listSubjectByPage(start, limit, startDate, endDate, type, mark, 2));
 
         return map;
     }

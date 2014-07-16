@@ -43,6 +43,28 @@ public class SubjectDaoHibernate extends GenericDaoHibernate<Subject, Integer> i
     }
 
     @Override
+    public List<Subject> listSubjectByPage(int start, int limit, Date startDate, Date endDate, int type, int mark, int deptId) {
+        Criteria c = getSession().createCriteria(Subject.class);
+        if (startDate != null) {
+            c.add(Restrictions.ge("createTime", startDate));
+        }
+        if (endDate != null) {
+            c.add(Restrictions.le("createTime", endDate));
+        }
+        if (type >= 0) {
+            c.add(Restrictions.eq("type", type));
+        }
+        if (mark >= 0) {
+            c.add(Restrictions.eq("mark", mark));
+        }
+        if (deptId > 0) {
+            c.add(Restrictions.eq("deptId", deptId));
+        }
+        return c.setFirstResult(start).setMaxResults(limit)
+                .addOrder(Order.asc("id")).list();
+    }
+
+    @Override
     public Long getCount(int deptId) {
         Criteria c = getSession().createCriteria(Subject.class);
         if (deptId > 0) {
@@ -59,6 +81,27 @@ public class SubjectDaoHibernate extends GenericDaoHibernate<Subject, Integer> i
         }
         return (Long) c.add(Restrictions.eq("type", type))
                 .setProjection(Projections.count("id")).uniqueResult();
+    }
+
+    @Override
+    public Long getCount(Date startDate, Date endDate, int type, int mark, int deptId) {
+        Criteria c = getSession().createCriteria(Subject.class);
+        if (startDate != null) {
+            c.add(Restrictions.ge("createTime", startDate));
+        }
+        if (endDate != null) {
+            c.add(Restrictions.le("createTime", endDate));
+        }
+        if (type >= 0) {
+            c.add(Restrictions.eq("type", type));
+        }
+        if (mark >= 0) {
+            c.add(Restrictions.eq("mark", mark));
+        }
+        if (deptId > 0) {
+            c.add(Restrictions.eq("deptId", deptId));
+        }
+        return (Long) c.setProjection(Projections.count("id")).uniqueResult();
     }
 
     @Override

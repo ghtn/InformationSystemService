@@ -4,6 +4,7 @@ import com.ghtn.model.Subject;
 import com.ghtn.vo.SubjectVO;
 
 import javax.servlet.http.HttpSession;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -11,9 +12,9 @@ import java.util.List;
  */
 public interface SubjectManager extends GenericManager<Subject, Integer> {
 
-    List<SubjectVO> listSubjectByPage(int start, int limit, int type, int deptId) throws Exception;
+    List<SubjectVO> listSubjectByPage(int start, int limit, String startDate, String endDate, int type, int mark, int deptId) throws Exception;
 
-    Long getCount(int type, int deptId);
+    Long getCount(String startDate, String endDate, int type, int mark, int deptId) throws ParseException;
 
     void addSubject(Subject subject, String paramStr, HttpSession session) throws Exception;
 

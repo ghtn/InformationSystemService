@@ -42,7 +42,7 @@ public class SubjectManagerTest extends BaseTestCase {
 
     @Test
     public void testGetCount() {
-        System.out.println(subjectManager.getCount(-1, 2));
+//        System.out.println(subjectManager.getCount(-1, 2));
     }
 
     @Test

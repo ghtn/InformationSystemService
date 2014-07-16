@@ -14,9 +14,13 @@ public interface SubjectDao extends GenericDao<Subject, Integer> {
 
     List<Subject> listSubjectByPage(int start, int limit, int type, int deptId);
 
+    List<Subject> listSubjectByPage(int start, int limit, Date startDate, Date endDate, int type, int mark, int deptId);
+
     Long getCount(int deptId);
 
     Long getCount(int type, int deptId);
+
+    Long getCount(Date startDate, Date endDate, int type, int mark, int deptId);
 
     List<Subject> listSubjectByDate(Date startDate, Date endDate, int deptId);
 
