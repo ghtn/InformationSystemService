@@ -361,10 +361,10 @@
         <poi.version>3.9</poi.version>
 
         <mysql.driverClassName>com.mysql.jdbc.Driver</mysql.driverClassName>
-        <mysql.url>jdbc:mysql://localhost:3306/information_system?useUnicode=true&amp;amp;characterEncoding=UTF-8
+        <mysql.url>jdbc:mysql://192.168.1.105:3306/information_system?useUnicode=true&amp;amp;characterEncoding=UTF-8
         </mysql.url>
         <mysql.username>root</mysql.username>
-        <mysql.password>212214</mysql.password>
+        <mysql.password>root</mysql.password>
 
         <!-- hibernate config -->
         <hibernate.dialect>org.hibernate.dialect.MySQL5Dialect</hibernate.dialect>
@@ -405,7 +405,7 @@
         <profile>
             <id>local-test</id>
             <properties>
-                <mysql.url>jdbc:mysql://192.168.1.105:3306/information_system?useUnicode=true&amp;amp;characterEncoding=UTF-8
+                <mysql.url>jdbc:mysql://192.168.1.105/information_system?useUnicode=true&amp;amp;characterEncoding=UTF-8
                 </mysql.url>
                 <mysql.username>root</mysql.username>
                 <mysql.password>root</mysql.password>

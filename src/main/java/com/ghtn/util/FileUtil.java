@@ -260,8 +260,9 @@ public class FileUtil {
                 Sheet sheet = wb.getSheetAt(0);
                 loopExcelSheet(list, sheet, startLine, sdf);
             }
-
             return list;
+            
+            
         } else {
             throw new FileNotFoundException("文件不存在！");
         }
@@ -287,11 +288,10 @@ public class FileUtil {
             }
             int n = 0;
             String[] strArray = new String[r.getLastCellNum()];
-
-            for (Iterator<Cell> cellIt = r.iterator(); cellIt.hasNext(); ) {
-                Cell cell = cellIt.next();
+//            for (Iterator<Cell> cellIt = r.iterator(); cellIt.hasNext(); ) {
+            for(int i = 0; i < r.getLastCellNum(); i++){
+                Cell cell = r.getCell(i);
                 String cellContent = "";
-
                 if (cell != null) {
                     switch (cell.getCellType()) {
                         // 数字
@@ -326,15 +326,10 @@ public class FileUtil {
                             break;
                     }
                 }
-
-
                 strArray[n] = cellContent;
-
                 n++;
             }
-
             list.add(strArray);
-
             line++;
         }
 

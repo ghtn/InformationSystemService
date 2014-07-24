@@ -1,16 +1,28 @@
 package com.ghtn.model;
 
+import java.sql.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.sql.Date;
 
 /**
  * Created by lihe on 14-7-7.
  */
 @Entity
 public class Employee {
+	
+	public Employee() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Employee(int id) {
+		// TODO Auto-generated constructor stub
+		this.setId(id);
+	}
+	
+	
     private int id;
 
     @Id
@@ -24,17 +36,17 @@ public class Employee {
         this.id = id;
     }
 
-    private int age;
-
-    @Basic
-    @javax.persistence.Column(name = "age", nullable = true, insertable = true, updatable = true)
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
+//    private int age;
+//
+//    @Basic
+//    @javax.persistence.Column(name = "age", nullable = true, insertable = true, updatable = true)
+//    public int getAge() {
+//        return age;
+//    }
+//
+//    public void setAge(int age) {
+//        this.age = age;
+//    }
 
     private Date armTime;
 
@@ -166,6 +178,18 @@ public class Employee {
 
     public void setDeptName(String deptName) {
         this.deptName = deptName;
+    }
+    
+    private String selfNationality;
+    
+    @Basic
+    @javax.persistence.Column(name = "selfNationality", nullable = true, insertable = true, updatable = true, length = 255)
+    public String getSelfNationality() {
+    	return selfNationality;
+    }
+    
+    public void setSelfNationality(String selfNationality) {
+    	this.selfNationality = selfNationality;
     }
 
     private String domicilePlace;
@@ -703,7 +727,7 @@ public class Employee {
 
         Employee employee = (Employee) o;
 
-        if (age != employee.age) return false;
+//        if (age != employee.age) return false;
         if (id != employee.id) return false;
         if (Float.compare(employee.postSalary, postSalary) != 0) return false;
         if (Float.compare(employee.skillSalary, skillSalary) != 0) return false;
@@ -720,6 +744,7 @@ public class Employee {
         if (country != null ? !country.equals(employee.country) : employee.country != null) return false;
         if (deptId != null ? !deptId.equals(employee.deptId) : employee.deptId != null) return false;
         if (deptName != null ? !deptName.equals(employee.deptName) : employee.deptName != null) return false;
+        if (selfNationality != null ? !selfNationality.equals(employee.selfNationality) : employee.selfNationality != null) return false;
         if (domicilePlace != null ? !domicilePlace.equals(employee.domicilePlace) : employee.domicilePlace != null)
             return false;
         if (duty != null ? !duty.equals(employee.duty) : employee.duty != null) return false;
@@ -784,7 +809,7 @@ public class Employee {
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + age;
+//        result = 31 * result + age;
         result = 31 * result + (armTime != null ? armTime.hashCode() : 0);
         result = 31 * result + (birthday != null ? birthday.hashCode() : 0);
         result = 31 * result + (bloodType != null ? bloodType.hashCode() : 0);
@@ -796,6 +821,7 @@ public class Employee {
         result = 31 * result + (country != null ? country.hashCode() : 0);
         result = 31 * result + (deptId != null ? deptId.hashCode() : 0);
         result = 31 * result + (deptName != null ? deptName.hashCode() : 0);
+        result = 31 * result + (selfNationality != null ? selfNationality.hashCode() : 0);
         result = 31 * result + (domicilePlace != null ? domicilePlace.hashCode() : 0);
         result = 31 * result + (duty != null ? duty.hashCode() : 0);
         result = 31 * result + (dutyTime != null ? dutyTime.hashCode() : 0);

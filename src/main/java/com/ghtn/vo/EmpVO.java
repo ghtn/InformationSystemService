@@ -1,10 +1,12 @@
 package com.ghtn.vo;
 
+import java.util.Date;
+
 /**
  * Created by lihe on 14-7-8.
  */
 public class EmpVO {
-
+	
     private String name;
     private String idCard;
     private int deptId;
