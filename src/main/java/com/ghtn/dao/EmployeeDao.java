@@ -12,8 +12,8 @@ public interface EmployeeDao extends GenericDao<Employee, Integer> {
 
     Employee getEmployeeByIdCard(String idCard);
     
-    List<Employee> listEmployeeByPage(int start, int limit, Date startDate, Date endDate);
+    List<Employee> listEmployeeByPage(int start, int limit, String queryCondition, String queryValue, String postState, String retire);
     
-    Long getCount(Date startDate, Date endDate);
+    Long getCount(String queryCondition, String queryValue, String postState, String retire);
 
 }

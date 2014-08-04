@@ -9,7 +9,7 @@ public class EmpVO {
 	
     private String name;
     private String idCard;
-    private int deptId;
+    private Integer deptId;
     private String deptName;
 
     public String getName() {
@@ -28,11 +28,11 @@ public class EmpVO {
         this.idCard = idCard;
     }
 
-    public int getDeptId() {
+    public Integer getDeptId() {
         return deptId;
     }
 
-    public void setDeptId(int deptId) {
+    public void setDeptId(Integer deptId) {
         this.deptId = deptId;
     }
 

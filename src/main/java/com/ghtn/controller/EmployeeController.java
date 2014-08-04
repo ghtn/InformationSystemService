@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -26,21 +27,16 @@ public class EmployeeController extends BaseController{
 	
 	@RequestMapping("/listEmployeeByPage")
 	@ResponseBody
-	public Map<String, Object> listEmployeeByPage(int start, int limit, String startDate, String endDate)throws Exception{
-//		System.out.println("EmployeeController.listEmployeeByPage:start:" + start + ", limit:" + limit);
+	public Map<String, Object> listEmployeeByPage(int start, int limit, String queryCondition, String queryValue, String postState, String retire)throws Exception{
 		Map<String, Object> map = new HashMap<>();
-		map.put("total", employeeManager.getCount(startDate, endDate));
-//		System.out.println(map.get("total"));
-		map.put("items", employeeManager.listEmployeeByPage(start, limit, startDate, endDate));
+		map.put("total", employeeManager.getCount(queryCondition, queryValue, postState, retire));
+		map.put("items", employeeManager.listEmployeeByPage(start, limit, queryCondition, queryValue, postState, retire));
 		return map;
 	}
 	
 	@RequestMapping("/add")
 	@ResponseBody
 	public Map<String, Object> add(Employee employee)throws Exception{
-//		System.out.println("employee add");
-//		System.out.println(employee.getName());
-//		System.out.println(employee.getBirthday());
 		employeeManager.save(employee);
 		return operationSuccess();
 	}
@@ -48,17 +44,24 @@ public class EmployeeController extends BaseController{
 	@RequestMapping("/update")
 	@ResponseBody
 	public Map<String, Object> update(Employee employee)throws Exception{
-//		System.out.println("employee update");
-//		System.out.println(employee.getName());
-//		System.out.println(employee.getBirthday());
-		employeeManager.update(employee);
+		employeeManager.updateEmployee(employee);
+		return operationSuccess();
+	}
+	
+	@RequestMapping("/updateRestoralAndDimission")
+	@ResponseBody
+	public Map<String, Object> updateRestoralAndDimission(String ids, String postState)throws Exception{
+		System.out.println(postState);
+		String strId[] = ids.split("#");
+		for( int i = 0; i < strId.length; i++){
+			employeeManager.updatePostState(new Employee(Integer.parseInt(strId[i])), postState);
+		}
 		return operationSuccess();
 	}
 	
 	@RequestMapping("/remove")
 	@ResponseBody
 	public Map<String, Object> remove(String ids)throws Exception{
-//		System.out.println("employee remove");
 		String strId[] = ids.split("#");
 		for( int i = 0; i < strId.length; i++){
 			employeeManager.remove(new Employee(Integer.parseInt(strId[i])));
@@ -74,6 +77,12 @@ public class EmployeeController extends BaseController{
         String fileName = FileUtil.uploadFile(file);
         session.setAttribute("fileName", fileName);
         return operationSuccess();
+    }
+    
+    @RequestMapping("/downloadTemplate")
+    @ResponseBody
+    public String downloadTemplate(String fileName, HttpServletResponse response) throws Exception {
+        return FileUtil.downloadFile(fileName, response);
     }
     
 

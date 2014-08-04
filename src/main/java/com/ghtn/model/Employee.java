@@ -87,7 +87,7 @@ public class Employee {
     private String card;
 
     @Basic
-    @javax.persistence.Column(name = "card", nullable = true, insertable = true, updatable = true, length = 255)
+    @javax.persistence.Column(name = "card", unique = true, nullable = false, insertable = true, updatable = true, length = 255)
     public String getCard() {
         return card;
     }
@@ -118,6 +118,18 @@ public class Employee {
 
     public void setCfgStyle(String cfgStyle) {
         this.cfgStyle = cfgStyle;
+    }
+    
+    private String warn;
+    
+    @Basic
+    @javax.persistence.Column(name = "warn", nullable = true, insertable = true, updatable = true, length = 255)
+    public String getWarn() {
+    	return warn;
+    }
+    
+    public void setWarn(String warn) {
+    	this.warn = warn;
     }
 
     private String comment;
@@ -159,7 +171,7 @@ public class Employee {
     private Integer deptId;
 
     @Basic
-    @javax.persistence.Column(name = "deptId", nullable = true, insertable = true, updatable = true)
+    @javax.persistence.Column(name = "deptId", nullable = false, insertable = true, updatable = true)
     public Integer getDeptId() {
         return deptId;
     }
@@ -171,7 +183,7 @@ public class Employee {
     private String deptName;
 
     @Basic
-    @javax.persistence.Column(name = "deptName", nullable = true, insertable = true, updatable = true, length = 255)
+    @javax.persistence.Column(name = "deptName", nullable = false, insertable = true, updatable = true, length = 255)
     public String getDeptName() {
         return deptName;
     }
@@ -243,7 +255,7 @@ public class Employee {
     private String empNumber;
 
     @Basic
-    @javax.persistence.Column(name = "empNumber", nullable = true, insertable = true, updatable = true, length = 255)
+    @javax.persistence.Column(name = "empNumber", nullable = false, insertable = true, updatable = true, length = 255)
     public String getEmpNumber() {
         return empNumber;
     }
@@ -387,7 +399,7 @@ public class Employee {
     private String jobType;
 
     @Basic
-    @javax.persistence.Column(name = "jobType", nullable = true, insertable = true, updatable = true, length = 255)
+    @javax.persistence.Column(name = "jobType", nullable = false, insertable = true, updatable = true, length = 255)
     public String getJobType() {
         return jobType;
     }
@@ -396,15 +408,15 @@ public class Employee {
         this.jobType = jobType;
     }
 
-    private String jobTypeTime;
+    private Date jobTypeTime;
 
     @Basic
     @javax.persistence.Column(name = "jobTypeTime", nullable = true, insertable = true, updatable = true, length = 255)
-    public String getJobTypeTime() {
+    public Date getJobTypeTime() {
         return jobTypeTime;
     }
 
-    public void setJobTypeTime(String jobTypeTime) {
+    public void setJobTypeTime(Date jobTypeTime) {
         this.jobTypeTime = jobTypeTime;
     }
 
@@ -435,7 +447,7 @@ public class Employee {
     private String name;
 
     @Basic
-    @javax.persistence.Column(name = "name", nullable = true, insertable = true, updatable = true, length = 255)
+    @javax.persistence.Column(name = "name", nullable = false, insertable = true, updatable = true, length = 255)
     public String getName() {
         return name;
     }
@@ -591,7 +603,7 @@ public class Employee {
     private String sex;
 
     @Basic
-    @javax.persistence.Column(name = "sex", nullable = true, insertable = true, updatable = true, length = 255)
+    @javax.persistence.Column(name = "sex", nullable = false, insertable = true, updatable = true, length = 255)
     public String getSex() {
         return sex;
     }
@@ -687,7 +699,7 @@ public class Employee {
     private Date unitTime;
 
     @Basic
-    @javax.persistence.Column(name = "unitTime", nullable = true, insertable = true, updatable = true)
+    @javax.persistence.Column(name = "unitTime", nullable = false, insertable = true, updatable = true)
     public Date getUnitTime() {
         return unitTime;
     }
@@ -738,6 +750,7 @@ public class Employee {
         if (cardBirthday != null ? !cardBirthday.equals(employee.cardBirthday) : employee.cardBirthday != null)
             return false;
         if (cfgStyle != null ? !cfgStyle.equals(employee.cfgStyle) : employee.cfgStyle != null) return false;
+        if (warn != null ? !warn.equals(employee.warn) : employee.warn != null) return false;
         if (comment != null ? !comment.equals(employee.comment) : employee.comment != null) return false;
         if (conversionTime != null ? !conversionTime.equals(employee.conversionTime) : employee.conversionTime != null)
             return false;
@@ -816,6 +829,7 @@ public class Employee {
         result = 31 * result + (card != null ? card.hashCode() : 0);
         result = 31 * result + (cardBirthday != null ? cardBirthday.hashCode() : 0);
         result = 31 * result + (cfgStyle != null ? cfgStyle.hashCode() : 0);
+        result = 31 * result + (warn != null ? warn.hashCode() : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         result = 31 * result + (conversionTime != null ? conversionTime.hashCode() : 0);
         result = 31 * result + (country != null ? country.hashCode() : 0);
