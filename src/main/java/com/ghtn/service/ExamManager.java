@@ -1,11 +1,11 @@
 package com.ghtn.service;
 
+import com.ghtn.Exception.ExistScoreException;
 import com.ghtn.Exception.NullParamStrException;
 import com.ghtn.model.Employee;
 import com.ghtn.model.Exam;
 import com.ghtn.vo.EmpVO;
 import com.ghtn.vo.ExamVO;
-import com.ghtn.vo.SubjectVO;
 
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
@@ -32,11 +32,11 @@ public interface ExamManager extends GenericManager<Exam, Integer> {
 
     EmpVO login(String idCard);
 
-    boolean checkExamEmp(int examId, String idCard);
+    boolean checkExamEmp(int examId, String idCard) throws ExistScoreException;
 
     List<ExamVO> listExam(int deptId);
 
-    List<SubjectVO> loadPaper(int examId) throws Exception;
+    Map<String, Object> loadPaper(int examId) throws Exception;
 
     Map<String, Object> finishExam(String paramStr) throws Exception, NullParamStrException;
 }

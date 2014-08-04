@@ -22,10 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by lihe on 14-6-30.
@@ -421,8 +418,17 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
     }
 
     @Override
-    public List<SubjectVO> loadPaper(int paperId) throws Exception {
+    public Map<String, Object> loadPaper(int paperId) throws Exception {
+        Map<String, Object> returnMap = new HashMap<>();
+
         List<SubjectVO> returnList = new ArrayList<>();
+
+        Paper paper = paperDao.get(paperId);
+        returnMap.put("paperName", paper.getName());
+        returnMap.put("fullScore", paper.getFullScore());
+        returnMap.put("passScore", paper.getPassScore());
+        returnMap.put("examTime", paper.getExamTime());
+        returnMap.put("deptName", departmentDao.getDeptName(paper.getDeptId()));
 
         List<Subject> subjectList = paperDao.getSubjects(paperId);
 
@@ -439,7 +445,8 @@ public class PaperManagerImpl extends GenericManagerImpl<Paper, Integer> impleme
             }
         }
 
-        return returnList;
+        returnMap.put("subjectList", returnList);
+        return returnMap;
     }
 
     /**

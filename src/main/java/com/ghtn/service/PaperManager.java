@@ -7,6 +7,7 @@ import com.ghtn.vo.SubjectVO;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lihe on 14-6-30.
@@ -37,6 +38,6 @@ public interface PaperManager extends GenericManager<Paper, Integer> {
 
     List<PaperVO> listPaper(int deptId, int status);
 
-    List<SubjectVO> loadPaper(int paperId) throws Exception;
+    Map<String, Object> loadPaper(int paperId) throws Exception;
 
 }

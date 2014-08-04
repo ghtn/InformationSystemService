@@ -7,7 +7,6 @@ import com.ghtn.model.Exam;
 import com.ghtn.service.ExamManager;
 import com.ghtn.vo.EmpVO;
 import com.ghtn.vo.ExamVO;
-import com.ghtn.vo.SubjectVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -121,10 +120,15 @@ public class ExamController extends BaseController {
     @ResponseBody
     public Map<String, Object> checkExamEmp(int examId, String idCard) throws ParseException {
         Map<String, Object> map = new HashMap<>();
-        if (examManager.checkExamEmp(examId, idCard)) {
-            map.put("code", 1);
-        } else {
-            map.put("code", -1);
+        try {
+            if (examManager.checkExamEmp(examId, idCard)) {
+                map.put("code", 1);
+            } else {
+                map.put("code", -1);
+            }
+        } catch (ExistScoreException e) {
+            e.printStackTrace();
+            map.put("code", 0);
         }
         return map;
     }
@@ -132,8 +136,8 @@ public class ExamController extends BaseController {
     @RequestMapping("/loadPaper")
     @ResponseBody
     public Map<String, Object> loadPaper(int examId) throws Exception {
-        Map<String, Object> map = new HashMap<>();
-        List<SubjectVO> list = examManager.loadPaper(examId);
+        Map<String, Object> map = examManager.loadPaper(examId);
+        List list = (List) map.get("subjectList");
         if (list != null && list.size() > 0) {
             map.put("code", 1);
             map.put("subjectList", list);

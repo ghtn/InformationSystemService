@@ -140,11 +140,10 @@ public class PaperController extends BaseController {
     @RequestMapping("/load")
     @ResponseBody
     public Map<String, Object> loadPaper(int paperId) throws Exception {
-        Map<String, Object> map = new HashMap<>();
-        List<SubjectVO> list = paperManager.loadPaper(paperId);
+        Map<String, Object> map = paperManager.loadPaper(paperId);
+        List list = (List) map.get("subjectList");
         if (list != null && list.size() > 0) {
             map.put("code", 1);
-            map.put("subjectList", list);
         } else {
             map.put("code", -1);
         }
