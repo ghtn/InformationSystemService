@@ -1,18 +1,32 @@
 package com.ghtn.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.sql.Date;
 
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
- * Created by lihe on 14-6-20.
+ * Created by lihe on 14-7-7.
  */
 @Entity
 public class Employee {
+	
+	public Employee() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Employee(int id) {
+		// TODO Auto-generated constructor stub
+		this.setId(id);
+	}
+	
+	
     private int id;
 
     @Id
+    @GeneratedValue
     @javax.persistence.Column(name = "id", nullable = false, insertable = true, updatable = true)
     public int getId() {
         return id;
@@ -22,17 +36,17 @@ public class Employee {
         this.id = id;
     }
 
-    private int age;
-
-    @Basic
-    @javax.persistence.Column(name = "age", nullable = false, insertable = true, updatable = true)
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
+//    private int age;
+//
+//    @Basic
+//    @javax.persistence.Column(name = "age", nullable = true, insertable = true, updatable = true)
+//    public int getAge() {
+//        return age;
+//    }
+//
+//    public void setAge(int age) {
+//        this.age = age;
+//    }
 
     private Date armTime;
 
@@ -73,7 +87,7 @@ public class Employee {
     private String card;
 
     @Basic
-    @javax.persistence.Column(name = "card", nullable = true, insertable = true, updatable = true, length = 255)
+    @javax.persistence.Column(name = "card", unique = true, nullable = false, insertable = true, updatable = true, length = 255)
     public String getCard() {
         return card;
     }
@@ -104,6 +118,18 @@ public class Employee {
 
     public void setCfgStyle(String cfgStyle) {
         this.cfgStyle = cfgStyle;
+    }
+    
+    private String warn;
+    
+    @Basic
+    @javax.persistence.Column(name = "warn", nullable = true, insertable = true, updatable = true, length = 255)
+    public String getWarn() {
+    	return warn;
+    }
+    
+    public void setWarn(String warn) {
+    	this.warn = warn;
     }
 
     private String comment;
@@ -142,16 +168,40 @@ public class Employee {
         this.country = country;
     }
 
-    private String depName;
+    private Integer deptId;
 
     @Basic
-    @javax.persistence.Column(name = "depName", nullable = true, insertable = true, updatable = true, length = 255)
-    public String getDepName() {
-        return depName;
+    @javax.persistence.Column(name = "deptId", nullable = false, insertable = true, updatable = true)
+    public Integer getDeptId() {
+        return deptId;
     }
 
-    public void setDepName(String depName) {
-        this.depName = depName;
+    public void setDeptId(Integer deptId) {
+        this.deptId = deptId;
+    }
+
+    private String deptName;
+
+    @Basic
+    @javax.persistence.Column(name = "deptName", nullable = false, insertable = true, updatable = true, length = 255)
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+    
+    private String selfNationality;
+    
+    @Basic
+    @javax.persistence.Column(name = "selfNationality", nullable = true, insertable = true, updatable = true, length = 255)
+    public String getSelfNationality() {
+    	return selfNationality;
+    }
+    
+    public void setSelfNationality(String selfNationality) {
+    	this.selfNationality = selfNationality;
     }
 
     private String domicilePlace;
@@ -205,7 +255,7 @@ public class Employee {
     private String empNumber;
 
     @Basic
-    @javax.persistence.Column(name = "empNumber", nullable = true, insertable = true, updatable = true, length = 255)
+    @javax.persistence.Column(name = "empNumber", nullable = false, insertable = true, updatable = true, length = 255)
     public String getEmpNumber() {
         return empNumber;
     }
@@ -349,7 +399,7 @@ public class Employee {
     private String jobType;
 
     @Basic
-    @javax.persistence.Column(name = "jobType", nullable = true, insertable = true, updatable = true, length = 255)
+    @javax.persistence.Column(name = "jobType", nullable = false, insertable = true, updatable = true, length = 255)
     public String getJobType() {
         return jobType;
     }
@@ -358,15 +408,15 @@ public class Employee {
         this.jobType = jobType;
     }
 
-    private String jobTypeTime;
+    private Date jobTypeTime;
 
     @Basic
     @javax.persistence.Column(name = "jobTypeTime", nullable = true, insertable = true, updatable = true, length = 255)
-    public String getJobTypeTime() {
+    public Date getJobTypeTime() {
         return jobTypeTime;
     }
 
-    public void setJobTypeTime(String jobTypeTime) {
+    public void setJobTypeTime(Date jobTypeTime) {
         this.jobTypeTime = jobTypeTime;
     }
 
@@ -397,7 +447,7 @@ public class Employee {
     private String name;
 
     @Basic
-    @javax.persistence.Column(name = "name", nullable = true, insertable = true, updatable = true, length = 255)
+    @javax.persistence.Column(name = "name", nullable = false, insertable = true, updatable = true, length = 255)
     public String getName() {
         return name;
     }
@@ -553,7 +603,7 @@ public class Employee {
     private String sex;
 
     @Basic
-    @javax.persistence.Column(name = "sex", nullable = true, insertable = true, updatable = true, length = 255)
+    @javax.persistence.Column(name = "sex", nullable = false, insertable = true, updatable = true, length = 255)
     public String getSex() {
         return sex;
     }
@@ -649,7 +699,7 @@ public class Employee {
     private Date unitTime;
 
     @Basic
-    @javax.persistence.Column(name = "unitTime", nullable = true, insertable = true, updatable = true)
+    @javax.persistence.Column(name = "unitTime", nullable = false, insertable = true, updatable = true)
     public Date getUnitTime() {
         return unitTime;
     }
@@ -689,7 +739,7 @@ public class Employee {
 
         Employee employee = (Employee) o;
 
-        if (age != employee.age) return false;
+//        if (age != employee.age) return false;
         if (id != employee.id) return false;
         if (Float.compare(employee.postSalary, postSalary) != 0) return false;
         if (Float.compare(employee.skillSalary, skillSalary) != 0) return false;
@@ -700,11 +750,14 @@ public class Employee {
         if (cardBirthday != null ? !cardBirthday.equals(employee.cardBirthday) : employee.cardBirthday != null)
             return false;
         if (cfgStyle != null ? !cfgStyle.equals(employee.cfgStyle) : employee.cfgStyle != null) return false;
+        if (warn != null ? !warn.equals(employee.warn) : employee.warn != null) return false;
         if (comment != null ? !comment.equals(employee.comment) : employee.comment != null) return false;
         if (conversionTime != null ? !conversionTime.equals(employee.conversionTime) : employee.conversionTime != null)
             return false;
         if (country != null ? !country.equals(employee.country) : employee.country != null) return false;
-        if (depName != null ? !depName.equals(employee.depName) : employee.depName != null) return false;
+        if (deptId != null ? !deptId.equals(employee.deptId) : employee.deptId != null) return false;
+        if (deptName != null ? !deptName.equals(employee.deptName) : employee.deptName != null) return false;
+        if (selfNationality != null ? !selfNationality.equals(employee.selfNationality) : employee.selfNationality != null) return false;
         if (domicilePlace != null ? !domicilePlace.equals(employee.domicilePlace) : employee.domicilePlace != null)
             return false;
         if (duty != null ? !duty.equals(employee.duty) : employee.duty != null) return false;
@@ -769,17 +822,20 @@ public class Employee {
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + age;
+//        result = 31 * result + age;
         result = 31 * result + (armTime != null ? armTime.hashCode() : 0);
         result = 31 * result + (birthday != null ? birthday.hashCode() : 0);
         result = 31 * result + (bloodType != null ? bloodType.hashCode() : 0);
         result = 31 * result + (card != null ? card.hashCode() : 0);
         result = 31 * result + (cardBirthday != null ? cardBirthday.hashCode() : 0);
         result = 31 * result + (cfgStyle != null ? cfgStyle.hashCode() : 0);
+        result = 31 * result + (warn != null ? warn.hashCode() : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         result = 31 * result + (conversionTime != null ? conversionTime.hashCode() : 0);
         result = 31 * result + (country != null ? country.hashCode() : 0);
-        result = 31 * result + (depName != null ? depName.hashCode() : 0);
+        result = 31 * result + (deptId != null ? deptId.hashCode() : 0);
+        result = 31 * result + (deptName != null ? deptName.hashCode() : 0);
+        result = 31 * result + (selfNationality != null ? selfNationality.hashCode() : 0);
         result = 31 * result + (domicilePlace != null ? domicilePlace.hashCode() : 0);
         result = 31 * result + (duty != null ? duty.hashCode() : 0);
         result = 31 * result + (dutyTime != null ? dutyTime.hashCode() : 0);
