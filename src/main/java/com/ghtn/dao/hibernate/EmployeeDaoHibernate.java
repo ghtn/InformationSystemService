@@ -1,5 +1,6 @@
 package com.ghtn.dao.hibernate;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -62,5 +63,21 @@ public class EmployeeDaoHibernate extends GenericDaoHibernate<Employee, Integer>
 			c.add(Restrictions.ilike("warn", retire, MatchMode.ANYWHERE));
 		}
 		return (Long) c.setProjection(Projections.count("id")).uniqueResult();
+	}
+	
+	@Override
+	public List<Employee> getEmployeesById(String ids) {
+		// TODO Auto-generated method stub
+		List<Employee> list = new ArrayList<Employee>();
+		String str[] = ids.split("_");
+		for( int i = 0 ; i < str.length; i++){
+			list.add(this.getEmployeeById(Integer.parseInt(str[i])));
+		}
+		return list;
+	}
+	
+	private Employee getEmployeeById(int id){
+		return (Employee) getSession().createCriteria(Employee.class)
+                .add(Restrictions.eq("id", id)).uniqueResult();
 	}
 }

@@ -10,4 +10,6 @@ import com.ghtn.model.User;
  * To change this template use File | Settings | File Templates.
  */
 public interface UserManager extends GenericManager<User, Long> {
+	boolean login(User user);
+	boolean updatePassword(String name, String passwordOld, String passwordNew);
 }

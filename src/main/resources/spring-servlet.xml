@@ -19,13 +19,14 @@
 
     <!-- 对模型视图名称的解析，在WEB-INF/page目录下找对应的jsp文件 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/page/" p:suffix=".jsp" />
-
+	
     <!--放过/scripts下的静态文件-->
     <mvc:resources mapping="/scripts/**" location="/scripts/" />
 
     <!-- 日志拦截器 -->
     <mvc:interceptors>
         <bean class="com.ghtn.interceptor.LogInterceptor"/>
+        <bean class="com.ghtn.interceptor.LoginValidator"/>
     </mvc:interceptors>
 
     <!-- 文件上传 -->

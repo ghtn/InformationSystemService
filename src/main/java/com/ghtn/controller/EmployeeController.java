@@ -93,6 +93,19 @@ public class EmployeeController extends BaseController{
         employeeManager.importEmployees(session);
     	return operationSuccess();
     }
+    
+    @RequestMapping("/exportEmployee")
+    @ResponseBody
+    public String exportEmployee(String ids, HttpServletResponse resp) throws Exception {
+        try {
+            // TODO : deptId从session中获取
+        	employeeManager.exportEmployee(ids, resp);
+            return "success";
+        } catch (Exception e) {
+            return "error";
+        }
+    }
+
 
 
 	public EmployeeManager getEmployeeManager() {

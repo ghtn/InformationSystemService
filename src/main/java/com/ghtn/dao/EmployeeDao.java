@@ -11,6 +11,8 @@ import com.ghtn.model.Employee;
 public interface EmployeeDao extends GenericDao<Employee, Integer> {
 
     Employee getEmployeeByIdCard(String idCard);
+
+    List<Employee> getEmployeesById(String ids);
     
     List<Employee> listEmployeeByPage(int start, int limit, String queryCondition, String queryValue, String postState, String retire);
     

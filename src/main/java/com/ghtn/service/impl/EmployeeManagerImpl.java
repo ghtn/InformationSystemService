@@ -1,28 +1,30 @@
 package com.ghtn.service.impl;
 
-import com.ghtn.dao.EmployeeDao;
-import com.ghtn.model.Employee;
-import com.ghtn.model.Subject;
-import com.ghtn.model.SubjectAnswer;
-import com.ghtn.service.EmployeeManager;
-import com.ghtn.util.ConstantUtil;
-import com.ghtn.util.DateUtil;
-import com.ghtn.util.FileUtil;
-import com.ghtn.util.StringUtil;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
-import java.io.File;
-import java.sql.Date;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
+import com.ghtn.dao.EmployeeDao;
+import com.ghtn.model.Employee;
+import com.ghtn.service.EmployeeManager;
+import com.ghtn.util.ConstantUtil;
+import com.ghtn.util.DateUtil;
+import com.ghtn.util.FileUtil;
+import com.ghtn.util.StringUtil;
 
 /**
  * Created by lihe on 14-6-23.
@@ -287,4 +289,76 @@ public class EmployeeManagerImpl extends GenericManagerImpl<Employee, Integer> i
     			break;
     	}
     }
+
+	@Override
+	public void exportEmployee(String ids, HttpServletResponse resp)
+			throws Exception {
+		// TODO Auto-generated method stub
+		List<Employee> list = employeeDao.getEmployeesById(ids);
+        if (list != null && list.size() > 0) {
+            List<String[]> dataList = new ArrayList<>();
+            String[] title = {
+            	"员工号", "姓名", "曾姓名", "性别", "国家地区",	
+            	"配置方式", "行政待遇级别", "技术人员", "出身日期", "身份证号",	
+            	"血型", "来源", "参加工作时间", "来本单位时间", "所在部门",	
+            	"职务", "职务任职时间", "职称", "职称任职时间", "工别",	
+            	"工种", "工种任职时间", "文化程度", "政治面貌", "在岗状态",	
+            	"本人成分", "健康状况", "家庭出身", "岗位工资", "技能工资",	
+            	"第一学历", "学校名称", "就读形式", "所学专业", "毕业时间",	
+            	"本人特长", "户籍所在地", "家庭住址", "邮政编码", "联系电话",
+            	"个人简历", "参军时间", "退伍时间", "转制时间", "生产线",
+            	"岗位", "技术级别", "职称资质", "身份证出生日期", "备注",
+            	"本人籍贯", "部门号", "预警"
+            };
+            dataList.add(title);
+            for (int i = 0; i < list.size(); i++) {
+            	Employee e = list.get(i);
+                String[] data = {
+                	e.getEmpNumber(), e.getName(), e.getSecondName(), e.getSex(), e.getCountry(),
+                	e.getCfgStyle(), e.getSalaryGrade(), e.getTechnicist(), e.getBirthday()+"", e.getCard(),
+                	e.getBloodType(), e.getSource(), e.getWorkTime()+"", e.getUnitTime()+"", e.getDeptName(),
+                	e.getDuty(), e.getDutyTime()+"", e.getJobTitle(), e.getJobTitleTime()+"", e.getJobDist(),
+                	e.getJobType(), e.getJobTypeTime()+"", e.getEducation(), e.getPoliticsStatus(), e.getPostState(), 
+                	e.getMyIngredient(), e.getHealthStatus(), e.getFamilyOrigin(), e.getPostSalary()+"", e.getSkillSalary()+"",
+                	e.getFirstEducation(), e.getSchoolName(), e.getStudyStyle(), e.getProfession(), e.getGraduateTime()+"",
+                	e.getSpeciality(), e.getDomicilePlace(), e.getHomeAddress(), e.getPostalCode(), e.getTelphone(),
+                	e.getResume(), e.getArmTime()+"", e.getEndArmTime()+"", e.getConversionTime()+"", e.getProductLine(),
+                	e.getJob(), e.getSkillGrage(), e.getJobQualification(), e.getCardBirthday()+"", e.getComment(),
+                	e.getSelfNationality(), e.getDeptId()+"", e.getWarn()
+                };
+                dataList.add(data);
+            }
+
+            String strExcelFile = FileUtil.exportExcel(dataList);
+            File file = new File(ConstantUtil.UPLOAD_TEMP_PATH + "/"
+                    + strExcelFile);
+
+            resp.reset();
+            resp.setContentType("application/vnd.ms-excel");
+            resp.setHeader("content-disposition", "attachment; filename="
+                    + strExcelFile);
+
+            BufferedInputStream bis = null;
+            BufferedOutputStream bos = null;
+            try {
+                bis = new BufferedInputStream(new FileInputStream(file));
+                bos = new BufferedOutputStream(resp.getOutputStream());
+                byte[] buff = new byte[2048];
+                int bytesread;
+                while (-1 != (bytesread = bis.read(buff, 0, buff.length))) {
+                    bos.write(buff, 0, bytesread);
+                }
+            } catch (final IOException e) {
+                System.out.println("出现ioexception." + e);
+            } finally {
+                if (bis != null)
+                    bis.close();
+                if (bos != null)
+                    bos.close();
+                FileUtil.deleteFile(file);
+            }
+        } else {
+            log.error("导出的结果集为空!");
+        }
+	}
 }

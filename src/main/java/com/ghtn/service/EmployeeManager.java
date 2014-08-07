@@ -3,6 +3,7 @@ package com.ghtn.service;
 import com.ghtn.model.Employee;
 import com.ghtn.model.Subject;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.text.ParseException;
@@ -26,4 +27,6 @@ public interface EmployeeManager extends GenericManager<Employee, Integer> {
     void updatePostState(Employee employee, String postState) throws Exception;
 
     void importEmployees(HttpSession session) throws Exception;
+
+    void exportEmployee(String ids, HttpServletResponse resp) throws Exception ;
 }

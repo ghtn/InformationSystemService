@@ -4,6 +4,7 @@ import com.ghtn.dao.GenericDao;
 import com.ghtn.dao.UserDao;
 import com.ghtn.model.User;
 import com.ghtn.service.UserManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,4 +27,18 @@ public class UserManagerImpl extends GenericManagerImpl<User, Long> implements U
         super(userDao);
         this.userDao = userDao;
     }
+
+	@Override
+	public boolean login(User user) {
+		// TODO Auto-generated method stub
+		return this.userDao.login(user);
+	}
+	
+
+	@Override
+	public boolean updatePassword(String name, String passwordOld,
+			String passwordNew) {
+		// TODO Auto-generated method stub
+		return this.userDao.updatePassword(name, passwordOld, passwordNew);
+	}
 }
