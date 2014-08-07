@@ -361,7 +361,7 @@
         <poi.version>3.9</poi.version>
 
         <mysql.driverClassName>com.mysql.jdbc.Driver</mysql.driverClassName>
-        <mysql.url>jdbc:mysql://192.168.1.105:3306/information_system?useUnicode=true&amp;amp;characterEncoding=UTF-8</mysql.url>
+        <mysql.url>jdbc:mysql://localhost:3306/information_system?useUnicode=true&amp;amp;characterEncoding=UTF-8</mysql.url>
         <mysql.username>root</mysql.username>
         <mysql.password>root</mysql.password>
 
