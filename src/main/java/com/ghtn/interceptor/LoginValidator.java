@@ -19,8 +19,9 @@ public class LoginValidator extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-    	// 只要不是登录、注销就要验证
-    	if( request.getRequestURI().indexOf("/user/login") < 0 && request.getRequestURI().indexOf("/user/logout") < 0){
+    	// 只有登录不需要验证
+    	if( request.getRequestURI().indexOf("/user/login") < 0
+    			&& request.getRequestURI().indexOf("InformationSystemService/resources/") < 0){
     		String userName = request.getParameter("userName");
     		if(request.getSession().getAttribute(userName) == null){
     			return false;

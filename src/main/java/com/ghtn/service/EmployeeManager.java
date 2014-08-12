@@ -26,7 +26,7 @@ public interface EmployeeManager extends GenericManager<Employee, Integer> {
     
     void updatePostState(Employee employee, String postState) throws Exception;
 
-    void importEmployees(HttpSession session) throws Exception;
+    void importEmployees(String fileName) throws Exception;
 
     void exportEmployee(String ids, HttpServletResponse resp) throws Exception ;
 }

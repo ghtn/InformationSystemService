@@ -23,7 +23,7 @@ public class UserDaoHibernate extends GenericDaoHibernate<User, Long> implements
         super(User.class);
     }
     @Override
-    public boolean login(User user) {
+    public User login(User user) {
     	// TODO Auto-generated method stub
     	Criteria c = getSession().createCriteria(User.class);
 		if( !StringUtil.isNullStr(user.getName())){
@@ -32,7 +32,7 @@ public class UserDaoHibernate extends GenericDaoHibernate<User, Long> implements
 		if( !StringUtil.isNullStr(user.getPassword())){
 			c.add(Restrictions.eq("password", user.getPassword()));
 		}
-	    return c.list().size() == 1 ? true : false;
+	    return c.list().size() == 1 ? (User)c.list().get(0) : null;
     }
     
 

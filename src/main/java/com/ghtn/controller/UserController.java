@@ -2,6 +2,7 @@ package com.ghtn.controller;
 
 import com.ghtn.model.User;
 import com.ghtn.service.UserManager;
+import com.ghtn.session.UserSession;
 import com.ghtn.util.DigestUtil;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -16,6 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,15 +48,20 @@ public class UserController extends BaseController {
     }
     
     @RequestMapping("/login")
-    public ModelAndView login(User user, HttpSession session) {
+    public ModelAndView login(User user, HttpSession session, HttpServletResponse response) {
     	String viewName = "login";
+    	Map<String, Object> map = new HashMap<String, Object>();
     	user.setPassword(DigestUtil.encryptByMD5(user.getPassword()));
-    	if(this.userManager.login(user)){
+    	if((user = this.userManager.login(user)) != null){
     		viewName = "index";
-			session.setMaxInactiveInterval(60*60*12);// 保存12小时
-			session.setAttribute(user.getName(), user.getName());
+    		UserSession us = new UserSession();
+    		us.setId(user.getId());
+    		us.setName(user.getName());
+    		us.setPassword(user.getPassword());
+			session.setAttribute(user.getName(), us);
 		}
-    	return new ModelAndView(viewName);
+    	map.put("result", viewName);
+    	return new ModelAndView(viewName, map);
     } 
     
     @RequestMapping("/check")

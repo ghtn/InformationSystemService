@@ -29,7 +29,7 @@ public class UserManagerImpl extends GenericManagerImpl<User, Long> implements U
     }
 
 	@Override
-	public boolean login(User user) {
+	public User login(User user) {
 		// TODO Auto-generated method stub
 		return this.userDao.login(user);
 	}

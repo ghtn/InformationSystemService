@@ -72,10 +72,10 @@ public class EmployeeController extends BaseController{
 
     @RequestMapping("/uploadFile")
     @ResponseBody
-    public Map<String, Object> uploadFile(@RequestParam("file") CommonsMultipartFile file, HttpSession session)
+    public Map<String, Object> uploadFile(@RequestParam("file") CommonsMultipartFile file)
             throws Exception {
         String fileName = FileUtil.uploadFile(file);
-        session.setAttribute("fileName", fileName);
+        employeeManager.importEmployees(fileName);
         return operationSuccess();
     }
     
@@ -83,15 +83,6 @@ public class EmployeeController extends BaseController{
     @ResponseBody
     public String downloadTemplate(String fileName, HttpServletResponse response) throws Exception {
         return FileUtil.downloadFile(fileName, response);
-    }
-    
-
-    @RequestMapping("/importEmployees")
-    @ResponseBody
-    public Map<String, Object> importEmployees(HttpSession session) throws Exception {
-        // TODO : deptId从session中获取
-        employeeManager.importEmployees(session);
-    	return operationSuccess();
     }
     
     @RequestMapping("/exportEmployee")

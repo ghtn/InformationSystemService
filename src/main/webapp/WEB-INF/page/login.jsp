@@ -20,7 +20,7 @@
 <body>
     <%
 	   // 重定向到新地址
-	   String site = new String("http://127.0.0.1:8080/InformationSystemClient/login.jsp?result=0");
+	   String site = new String("http://127.0.0.1:8080/InformationSystemClient/login.jsp?result=" + request.getAttribute("result"));
 	   response.setStatus(response.SC_MOVED_TEMPORARILY);
 	   response.setHeader("Location", site); 
 	%>

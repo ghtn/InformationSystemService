@@ -79,8 +79,8 @@ public class EmployeeManagerImpl extends GenericManagerImpl<Employee, Integer> i
     }
 
     @Override
-    public void importEmployees(HttpSession session) throws Exception {
-        String fileName = ConstantUtil.UPLOAD_TEMP_PATH + "/" + session.getAttribute("fileName");
+    public void importEmployees(String fileName) throws Exception {
+        fileName = ConstantUtil.UPLOAD_TEMP_PATH + "/" + fileName;
         List<String[]> list = FileUtil.ExcelReaderForList(fileName, 2);
         if (list != null && list.size() > 0) {
         	String fieldName[] = list.get(0);
@@ -315,15 +315,15 @@ public class EmployeeManagerImpl extends GenericManagerImpl<Employee, Integer> i
             	Employee e = list.get(i);
                 String[] data = {
                 	e.getEmpNumber(), e.getName(), e.getSecondName(), e.getSex(), e.getCountry(),
-                	e.getCfgStyle(), e.getSalaryGrade(), e.getTechnicist(), e.getBirthday()+"", e.getCard(),
-                	e.getBloodType(), e.getSource(), e.getWorkTime()+"", e.getUnitTime()+"", e.getDeptName(),
-                	e.getDuty(), e.getDutyTime()+"", e.getJobTitle(), e.getJobTitleTime()+"", e.getJobDist(),
-                	e.getJobType(), e.getJobTypeTime()+"", e.getEducation(), e.getPoliticsStatus(), e.getPostState(), 
+                	e.getCfgStyle(), e.getSalaryGrade(), e.getTechnicist(), e.getBirthday()==null?"":e.getBirthday()+"", e.getCard(),
+                	e.getBloodType(), e.getSource(), e.getWorkTime()==null?"":e.getWorkTime()+"", e.getUnitTime()==null?"":e.getUnitTime()+"", e.getDeptName(),
+                	e.getDuty(), e.getDutyTime()==null?"":e.getDutyTime()+"", e.getJobTitle(), e.getJobTitleTime()==null?"":e.getJobTitleTime()+"", e.getJobDist(),
+                	e.getJobType(), e.getJobTypeTime()==null?"":e.getJobTypeTime()+"", e.getEducation(), e.getPoliticsStatus(), e.getPostState(), 
                 	e.getMyIngredient(), e.getHealthStatus(), e.getFamilyOrigin(), e.getPostSalary()+"", e.getSkillSalary()+"",
-                	e.getFirstEducation(), e.getSchoolName(), e.getStudyStyle(), e.getProfession(), e.getGraduateTime()+"",
+                	e.getFirstEducation(), e.getSchoolName(), e.getStudyStyle(), e.getProfession(), e.getGraduateTime()==null?"":e.getGraduateTime()+"",
                 	e.getSpeciality(), e.getDomicilePlace(), e.getHomeAddress(), e.getPostalCode(), e.getTelphone(),
-                	e.getResume(), e.getArmTime()+"", e.getEndArmTime()+"", e.getConversionTime()+"", e.getProductLine(),
-                	e.getJob(), e.getSkillGrage(), e.getJobQualification(), e.getCardBirthday()+"", e.getComment(),
+                	e.getResume(), e.getArmTime()==null?"":e.getArmTime()+"", e.getEndArmTime()==null?"":e.getEndArmTime()+"", e.getConversionTime()==null?"":e.getConversionTime()+"", e.getProductLine(),
+                	e.getJob(), e.getSkillGrage(), e.getJobQualification(), e.getCardBirthday()==null?"":e.getCardBirthday()+"", e.getComment(),
                 	e.getSelfNationality(), e.getDeptId()+"", e.getWarn()
                 };
                 dataList.add(data);
