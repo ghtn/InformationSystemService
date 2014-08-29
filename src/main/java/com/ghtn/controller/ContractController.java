@@ -47,8 +47,11 @@ public class ContractController extends BaseController{
 	
 	@RequestMapping("/remove")
 	@ResponseBody
-	public Map<String, Object> remove(String id)throws Exception{
-		contractManager.removeContract(new Contract(Integer.parseInt(id)));
+	public Map<String, Object> remove(String ids)throws Exception{
+		String strIds[] = ids.split("#");
+		for (String id : strIds) {
+			contractManager.removeContract(new Contract(Integer.parseInt(id)));
+		}
 		return operationSuccess();
 	}
 	
@@ -56,6 +59,13 @@ public class ContractController extends BaseController{
 	@ResponseBody
 	public Map<String, Object> add(Contract contract)throws Exception{
 		contractManager.save(contract);
+		return operationSuccess();
+	}
+	
+	@RequestMapping("/update")
+	@ResponseBody
+	public Map<String, Object> update(Contract contract)throws Exception{
+		contractManager.updateContract(contract);
 		return operationSuccess();
 	}
 

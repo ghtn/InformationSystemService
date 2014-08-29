@@ -85,7 +85,7 @@ public class Contract implements Serializable {
 	}
 	
 	@Basic
-    @javax.persistence.Column(name = "card", unique = false, nullable = false, insertable = true, updatable = true)
+    @javax.persistence.Column(name = "card", unique = false, nullable = true, insertable = true, updatable = true)
 	public String getCard() {
 		return card;
 	}

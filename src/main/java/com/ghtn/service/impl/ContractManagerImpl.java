@@ -52,4 +52,10 @@ public class ContractManagerImpl extends GenericManagerImpl<Contract, Integer> i
 		this.contractDao.save(contract);
 	}
 
+	@Override
+	public void updateContract(Contract contract) throws Exception {
+		// TODO Auto-generated method stub
+		this.contractDao.save(contract);
+	}
+
 }

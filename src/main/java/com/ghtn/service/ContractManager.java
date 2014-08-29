@@ -17,5 +17,5 @@ public interface ContractManager extends GenericManager<Contract, Integer> {
     Long getCount(String queryCondition, String queryValue);
     void removeContract(Contract contract);
     void addContract(Contract contract) throws Exception;
-
+    void updateContract(Contract contract) throws Exception;
 }
