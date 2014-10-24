@@ -20,6 +20,8 @@ public class LoginValidator extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
     	// 只有登录不需要验证
+    	System.out.println(request.getRequestURI());
+    	System.out.println(request.getSession().getAttribute(request.getParameter("userName")));
     	if( request.getRequestURI().indexOf("/user/login") < 0
     			&& request.getRequestURI().indexOf("InformationSystemService/resources/") < 0){
     		String userName = request.getParameter("userName");

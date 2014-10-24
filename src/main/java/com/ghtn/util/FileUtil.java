@@ -612,7 +612,6 @@ public class FileUtil {
 
             // 文件在服务器硬盘上的全路径
             String path = ConstantUtil.UPLOAD_TEMP_PATH + "/" + newFileName;
-
             File localFile = new File(path);
             try {
                 // 上传文件

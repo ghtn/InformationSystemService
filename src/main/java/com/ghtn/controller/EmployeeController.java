@@ -29,6 +29,8 @@ public class EmployeeController extends BaseController{
 	@ResponseBody
 	public Map<String, Object> listEmployeeByPage(int start, int limit, String queryCondition, String queryValue, String postState, String retire)throws Exception{
 		Map<String, Object> map = new HashMap<>();
+		System.out.println(queryCondition);
+		System.out.println(queryValue);
 		map.put("total", employeeManager.getCount(queryCondition, queryValue, postState, retire));
 		map.put("items", employeeManager.listEmployeeByPage(start, limit, queryCondition, queryValue, postState, retire));
 		return map;
