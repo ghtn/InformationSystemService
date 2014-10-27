@@ -29,10 +29,17 @@ public class EmployeeController extends BaseController{
 	@ResponseBody
 	public Map<String, Object> listEmployeeByPage(int start, int limit, String queryCondition, String queryValue, String postState, String retire)throws Exception{
 		Map<String, Object> map = new HashMap<>();
-		System.out.println(queryCondition);
-		System.out.println(queryValue);
 		map.put("total", employeeManager.getCount(queryCondition, queryValue, postState, retire));
 		map.put("items", employeeManager.listEmployeeByPage(start, limit, queryCondition, queryValue, postState, retire));
+		return map;
+	}
+	
+	@RequestMapping("/listTransferEmployeeByPage")
+	@ResponseBody
+	public Map<String, Object> listTransferEmployeeByPage(int start, int limit, String queryCondition, String queryValue)throws Exception{
+		Map<String, Object> map = new HashMap<>();
+		map.put("total", employeeManager.getTransferCount(queryCondition, queryValue));
+		map.put("items", employeeManager.listTransferEmployeeByPage(start, limit, queryCondition, queryValue));
 		return map;
 	}
 	
@@ -43,16 +50,34 @@ public class EmployeeController extends BaseController{
 		return operationSuccess();
 	}
 	
-	@RequestMapping("/update")
+	@RequestMapping("/updateInfo")
 	@ResponseBody
-	public Map<String, Object> update(Employee employee)throws Exception{
-		employeeManager.updateEmployee(employee);
+	public Map<String, Object> updateInfo(Employee employee)throws Exception{
+		employeeManager.save(employee);
 		return operationSuccess();
 	}
 	
-	@RequestMapping("/updateRestoralAndDimission")
+	@RequestMapping("/updateEdit")
 	@ResponseBody
-	public Map<String, Object> updateRestoralAndDimission(String ids, String postState)throws Exception{
+	public Map<String, Object> updateEdit(Employee employee)throws Exception{
+		employeeManager.save(employee);
+		return operationSuccess();
+	}
+	
+	@RequestMapping("/updateRestoral")
+	@ResponseBody
+	public Map<String, Object> updateRestoral(String ids, String postState)throws Exception{
+		System.out.println(postState);
+		String strId[] = ids.split("#");
+		for( int i = 0; i < strId.length; i++){
+			employeeManager.updatePostState(new Employee(Integer.parseInt(strId[i])), postState);
+		}
+		return operationSuccess();
+	}
+	
+	@RequestMapping("/updateDimission")
+	@ResponseBody
+	public Map<String, Object> updateDimission(String ids, String postState)throws Exception{
 		System.out.println(postState);
 		String strId[] = ids.split("#");
 		for( int i = 0; i < strId.length; i++){

@@ -17,12 +17,12 @@ public interface EmployeeManager extends GenericManager<Employee, Integer> {
     List<Employee> listEmployeeByPage(int start, int limit, String queryCondition, String queryValue, String postState, String retire) throws Exception;
 
     Long getCount(String queryCondition, String queryValue, String postState, String retire) throws ParseException;
+    
+    
+    List<Employee> listTransferEmployeeByPage(int start, int limit, String queryCondition, String queryValue);
+    
+    Long getTransferCount(String queryCondition, String queryValue);
 
-    void addEmployee(Employee employee) throws Exception;
-
-    void removeEmployee(Employee employee);
-
-    void updateEmployee(Employee employee) throws Exception;
     
     void updatePostState(Employee employee, String postState) throws Exception;
 

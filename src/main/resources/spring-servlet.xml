@@ -21,12 +21,13 @@
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/page/" p:suffix=".jsp" />
 	
     <!--放过/scripts下的静态文件-->
-    <mvc:resources mapping="/scripts/**" location="/scripts/" />
+    <mvc:resources mapping="/site/**" location="/site/" />
 
-    <!-- 日志拦截器 -->
+    <!-- 拦截器 -->
     <mvc:interceptors>
         <bean class="com.ghtn.interceptor.LogInterceptor"/>
         <bean class="com.ghtn.interceptor.LoginValidator"/>
+        <bean class="com.ghtn.interceptor.GradeValidator"/>
     </mvc:interceptors>
 
     <!-- 文件上传 -->

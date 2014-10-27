@@ -12,6 +12,8 @@ import java.util.Properties;
  * To change this template use File | Settings | File Templates.
  */
 public class ConstantUtil {
+	
+	public static int MAX_GRADE = 99999;
     /**
      * 索引根目录
      */

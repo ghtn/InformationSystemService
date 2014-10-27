@@ -3,57 +3,56 @@ package com.ghtn.dao.hibernate;
 import java.util.List;
 
 import com.ghtn.dao.UserDao;
+import com.ghtn.model.Employee;
 import com.ghtn.model.User;
 import com.ghtn.util.StringUtil;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Administrator
- * Date: 13-11-1
- * Time: 上午10:11
+ * Created with IntelliJ IDEA. User: Administrator Date: 13-11-1 Time: 上午10:11
  * To change this template use File | Settings | File Templates.
  */
 @Repository("userDao")
-public class UserDaoHibernate extends GenericDaoHibernate<User, Long> implements UserDao {
-    public UserDaoHibernate() {
-        super(User.class);
-    }
-    @Override
-    public User login(User user) {
-    	// TODO Auto-generated method stub
-    	Criteria c = getSession().createCriteria(User.class);
-		if( !StringUtil.isNullStr(user.getName())){
-			c.add(Restrictions.eq("name", user.getName()));
-		}
-		if( !StringUtil.isNullStr(user.getPassword())){
-			c.add(Restrictions.eq("password", user.getPassword()));
-		}
-	    return c.list().size() == 1 ? (User)c.list().get(0) : null;
-    }
-    
+public class UserDaoHibernate extends GenericDaoHibernate<User, Long> implements
+		UserDao {
+	public UserDaoHibernate() {
+		super(User.class);
+	}
 
 	@Override
-	public boolean updatePassword(String name, String passwordOld, String passwordNew) {
-		// TODO Auto-generated method stub
+	public User find(String account) {
 		Criteria c = getSession().createCriteria(User.class);
-		if( !StringUtil.isNullStr(name)){
-			c.add(Restrictions.eq("name", name));
+		if (!StringUtil.isNullStr(account)) {
+			c.add(Restrictions.eq("account", account));
+			List<User> list = c.list();
+			return list.size() == 1 ? list.get(0) : null;
 		}
-		if( !StringUtil.isNullStr(passwordOld)){
-			c.add(Restrictions.eq("password", passwordOld));
+		return null;
+	}
+
+	@Override
+	public List<User> listUserByPage(int start, int limit, String condition,
+			String value) {
+		Criteria c = getSession().createCriteria(User.class);
+		if (!StringUtil.isNullStr(condition)) {
+			c.add(Restrictions.ilike(condition, value, MatchMode.ANYWHERE));
 		}
-		List list = c.list();
-		if( list.size() == 1){
-			User user = (User) list.get(0);
-			user.setPassword(passwordNew);
-			this.save(user);
-			return true;
+		return c.setFirstResult(start).setMaxResults(limit)
+				.addOrder(Order.asc("id")).list();
+	}
+
+	@Override
+	public int getCount(String condition, String value) {
+		Criteria c = getSession().createCriteria(User.class);
+		if (!StringUtil.isNullStr(condition)) {
+			c.add(Restrictions.ilike(condition, value, MatchMode.ANYWHERE));
 		}
-		return false;
+		return c.list().size();
 	}
 
 }

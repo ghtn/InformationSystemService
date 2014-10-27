@@ -17,5 +17,9 @@ public interface EmployeeDao extends GenericDao<Employee, Integer> {
     List<Employee> listEmployeeByPage(int start, int limit, String queryCondition, String queryValue, String postState, String retire);
     
     Long getCount(String queryCondition, String queryValue, String postState, String retire);
+    
+    List<Employee> listTransferEmployeeByPage(int start, int limit, String queryCondition, String queryValue);
+    
+    Long getTransferCount(String queryCondition, String queryValue);
 
 }

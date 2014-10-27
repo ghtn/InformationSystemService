@@ -29,14 +29,16 @@ public class BaseController {
     @ExceptionHandler
     @ResponseBody
     public Map<String, Object> handleException(Exception e) {
-        log.error("------------发生异常！----------------");
-        log.error("Caused by : " + e.getCause());
-        log.error("Message : " + e.getMessage());
-        log.error("Exception : ", e);
-        Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("success", false);
-        returnMap.put("msg", "操作失败!");
-        returnMap.put("caused by", e.getCause());
+    	Map<String, Object> returnMap = new HashMap<>();
+    	returnMap.put("success", false);
+    	returnMap.put("msg", "操作失败!");
+    	if( e != null){
+    		log.error("------------发生异常！----------------");
+    		log.error("Caused by : " + e.getCause());
+    		log.error("Message : " + e.getMessage());
+    		log.error("Exception : ", e);
+    		returnMap.put("caused by", e.getCause());
+    	}
         return returnMap;
     }
 
